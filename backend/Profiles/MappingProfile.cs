@@ -25,5 +25,8 @@ public class MappingProfile : Profile
         // Mapping from Process to ProcessResponseDto
         CreateMap<Process, ProcessResponseDto>()
             .ForMember(dest => dest.ChartName, opt => opt.MapFrom(src => src.Chart.Name));
+
+        CreateMap<Chart, ChartRequestDto>();
+        CreateMap<Process, ProcessRequestDto>();
     }
 }

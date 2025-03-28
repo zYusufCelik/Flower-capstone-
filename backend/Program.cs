@@ -28,7 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); 
 }
 
-//Yeni chart 
+//chart kaydetme
 app.MapPost("/saveChart", async (Chart chart, ApplicationDbContext dbContext, IMapper mapper) => {
 
     var chartDto = mapper.Map<ChartRequestDto>(chart);
@@ -50,26 +50,26 @@ app.MapGet("/charts", async (ApplicationDbContext dbContext, IMapper mapper) =>
     return Results.Ok(chartDtos);
 });
 
-
-// İçinde bulunduğun chart da new process dediğinde çalışan api 
-app.MapPost("/newProcess/{chartId}", async (int chartId, ProcessRequestDto processDto, ApplicationDbContext dbContext, IMapper mapper) =>
+// Chartı silme api
+app.MapDelete("/deleteChart/{id:int}", async (int id, ApplicationDbContext dbContext, IMapper mapper) =>
 {
-    var chart = await dbContext.Charts.FindAsync(chartId);
+    var chart = await dbContext.Charts
+        .Include(c => c.Processes) 
+        .FirstOrDefaultAsync(c => c.Id == id);
 
-    if (chart == null)
-    {
-        return Results.NotFound($"Chart with id {chartId} not found.");
-    }
+    if (chart is null)
+        return Results.NotFound($"Chart with ID {id} not found.");
 
-    var process = mapper.Map<Process>(processDto);
-    process.ChartId = chartId;
+    // DTO'ya dönüştürme
+    var chartDto = mapper.Map<ChartResponseDto>(chart);
 
-    dbContext.Processes.Add(process);
+    dbContext.Charts.Remove(chart);
     await dbContext.SaveChangesAsync();
 
-    var processResponse = mapper.Map<ProcessResponseDto>(process);
-    return Results.Created($"/charts/{chartId}/process/{process.Id}", processResponse);
+    return Results.Ok(chartDto); 
 });
+
+
     
 
 app.Run();
