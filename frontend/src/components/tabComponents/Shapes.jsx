@@ -3,58 +3,70 @@ import React from "react";
 const Shapes = () => {
   const shapes = [
     {
-      icon: "⬤",
-      color: "text-green-500",
+      icon: <div className="w-4 h-4 bg-green-500 rounded-full"></div>,
       name: "Operation",
       description:
-        "An action. One of the steps in the procedure. Any operation for making, altering or changing. Eg. Drilling a hole, cutting, shaping."
+        "An action. One of the steps in the procedure. Any operation for making, altering or changing. Eg. Drilling a hole, cutting, shaping.",
     },
     {
-      icon: "⬛",
-      color: "text-blue-500",
+      icon: <div className="w-4 h-4 bg-blue-500"></div>,
       name: "Inspection",
       description:
-        "Represents checking for quality and quantity of the items. Eg. Weight check, examine printed form for information."
+        "Represents checking for quality and quantity of the items. Eg. Weight check, examine printed form for information.",
     },
     {
-      icon: "→",
-      color: "text-orange-500",
+      icon: <span className="text-orange-500 text-lg">→</span>,
       name: "Transportation",
       description:
-        "Movement of workers or materials. Eg. Move material by truck or conveyor."
+        "Movement of workers or materials. Eg. Move material by truck or conveyor.",
     },
     {
-      icon: "◐",
-      color: "text-yellow-400",
+      icon: (
+        <div className="w-4 h-4 bg-yellow-400 rounded-full relative overflow-hidden">
+          <div className="absolute left-0 top-0 w-1/2 h-full bg-white"></div>
+        </div>
+      ),
       name: "Delay",
       description:
-        "Delay means the process has stopped due to some reason. Eg. Waiting for elevator, materials waiting on floor to be processed."
+        "Delay means the process has stopped due to some reason. Eg. Waiting for elevator, materials waiting on floor to be processed.",
     },
     {
-      icon: "▽",
-      color: "text-purple-500",
+      icon: (
+        <div className="w-4 h-4 bg-purple-500 clip-triangle-down"></div>
+      ),
       name: "Storage",
-      description:
-        "Represents a storage or holding step."
-    }
+      description: "Represents a storage or holding step.",
+    },
   ];
 
   return (
-    <div className="w-fit bg-white p-6 rounded-xl shadow-md border mx-auto">
-      <h3 className="text-lg font-semibold mb-4 text-center">SHAPES SUMMARY</h3>
+    <div className="w-full max-w-3xl mx-auto">
+      <h3 className="text-xl font-semibold mb-6 text-center">SHAPES</h3>
+
       <div className="space-y-4">
         {shapes.map((shape, index) => (
-          <div key={index} className="flex items-start w-[700px] border border-gray-300 rounded p-3 bg-white">
-            <div className={`text-3xl mr-4 mt-1 ${shape.color}`}>{shape.icon}</div>
-            <div className="flex flex-col w-full">
-              <div className="flex items-center mb-2 gap-6">
-                <div className="border border-black px-4 py-1 text-sm font-semibold rounded w-fit">
+          <div
+            key={index}
+            className="flex items-center border border-gray-200 rounded-md p-4 bg-white shadow-sm hover:shadow-md transition"
+          >
+            {/* Icon */}
+            <div className="mr-4 flex items-center justify-center w-5 h-5">
+              {shape.icon}
+            </div>
+
+            {/* Name + Description */}
+            <div className="flex items-start w-full">
+              {/* Name */}
+              <div className="w-32">
+                <span className="font-semibold text-sm text-gray-900 bg-gray-100 border border-gray-300 rounded-md px-3 py-1 inline-block text-center">
                   {shape.name}
-                </div>
-                <div className="border border-black p-2 text-xs text-gray-700 rounded max-w-[420px]">
-                  {shape.description}
-                </div>
+                </span>
               </div>
+
+              {/* Description */}
+              <p className="text-sm text-gray-700 leading-snug ml-4">
+                {shape.description}
+              </p>
             </div>
           </div>
         ))}

@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaShapes, FaLightbulb, FaClipboardList } from "react-icons/fa";
 import Shapes from "./Shapes";
 import ProposedEnhancements from "./ProposedEnhancements";
 
-const Tab = () => {
+const Tabs = () => {
   const [activeTab, setActiveTab] = useState("shapes");
-  const [hovered, setHovered] = useState(false);
-  const [position, setPosition] = useState({ x: 20, y: window.innerHeight - 100 });
+  const [expanded, setExpanded] = useState(false);
+  const [position, setPosition] = useState({ x: 20, y: 100 }); // <-- daha yukarı başlasın
   const tabRef = useRef(null);
   const isDragging = useRef(false);
   const offset = useRef({ x: 0, y: 0 });
@@ -48,50 +47,61 @@ const Tab = () => {
       ref={tabRef}
       className="group z-50 fixed"
       style={{ left: position.x, top: position.y }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseDown={startDragging} // <--- sürüklemeyi başlat
     >
-      <div
-        onMouseDown={startDragging}
-        className="cursor-move flex space-x-2 border border-gray-300 bg-white rounded-lg px-2 py-1 text-xs font-semibold shadow-md"
-      >
-        <button
-          className={`flex items-center space-x-1 ${
-            activeTab === "shapes" ? "border-b-2 border-black" : ""
-          }`}
-          onClick={() => setActiveTab("shapes")}
-        >
-          <FaShapes /> <span>SHAPES</span>
-        </button>
-        <button
-          className={`flex items-center space-x-1 ${
-            activeTab === "summary" ? "border-b-2 border-black" : ""
-          }`}
-          onClick={() => setActiveTab("summary")}
-        >
-          <FaClipboardList /> <span>SUMMARY</span>
-        </button>
-        <button
-          className={`flex items-center space-x-1 ${
-            activeTab === "improvement" ? "border-b-2 border-black" : ""
-          }`}
-          onClick={() => setActiveTab("improvement")}
-        >
-          <FaLightbulb /> <span>IMPROVEMENT IDEAS</span>
-        </button>
-      </div>
+      <div className="flex items-start space-x-2">
+        {/* Sol sekme butonları */}
+        <div className="flex flex-col space-y-1 border border-black p-1 bg-white rounded">
+          <button
+            onClick={() => setActiveTab("shapes")}
+            className={`px-4 py-1 text-sm border border-black w-40 rounded ${
+              activeTab === "shapes" ? "font-bold bg-gray-100" : ""
+            }`}
+          >
+            SHAPES
+          </button>
+          <button
+            onClick={() => setActiveTab("summary")}
+            className={`px-4 py-1 text-sm border border-black w-40 rounded ${
+              activeTab === "summary" ? "font-bold bg-gray-100" : ""
+            }`}
+          >
+            SUMMARY
+          </button>
+          <button
+            onClick={() => setActiveTab("improvement")}
+            className={`px-4 py-1 text-sm border border-black w-40 rounded ${
+              activeTab === "improvement" ? "font-bold bg-gray-100" : ""
+            }`}
+          >
+            IMPROVEMENT IDEAS
+          </button>
+        </div>
 
-      <div
-        className={`absolute top-full mt-1 bg-white border border-gray-300 rounded-lg shadow-md p-4 transition-all duration-300 origin-top-left ${
-          hovered ? "opacity-100 scale-100 w-[300px] sm:w-[500px] md:w-[700px]" : "opacity-0 scale-95 w-0 pointer-events-none"
-        }`}
-      >
-        {activeTab === "shapes" && <Shapes />}
-        {activeTab === "improvement" && <ProposedEnhancements />}
-        {activeTab === "summary" && <p className="text-sm">Summary component yakında eklenecek...</p>}
+        {/* Aç/Kapat butonu */}
+        <div>
+          <button
+            onClick={() => setExpanded((prev) => !prev)}
+            className="w-8 h-8 flex items-center justify-center border border-gray-400 rounded bg-white hover:bg-gray-100 transition"
+            title={expanded ? "Close Panel" : "Open Panel"}
+          >
+            {expanded ? "↙" : "↗"}
+          </button>
+        </div>
+
+        {/* İçerik */}
+        {expanded && (
+          <div className="absolute top-0 left-[calc(100%+12px)] bg-white border border-gray-300 rounded-xl shadow-lg p-5 w-[90vw] max-w-5xl transition-all">
+            {activeTab === "shapes" && <Shapes />}
+            {activeTab === "improvement" && <ProposedEnhancements />}
+            {activeTab === "summary" && (
+              <p className="text-sm text-gray-700">Summary component yakında eklenecek...</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default Tab;
+export default Tabs;
