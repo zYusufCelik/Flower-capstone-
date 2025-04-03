@@ -1,6 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import Shapes from "./Shapes";
 import ProposedEnhancements from "./ProposedEnhancements";
+import Summary from "./Summary";
+
+const flowSteps = [
+  { type: "Operation", isValueAdded: true, time: 10, distance: 5 },
+  { type: "Inspection", isValueAdded: false, time: 5, distance: 0 },
+  { type: "Transportation", isValueAdded: true, time: 7, distance: 20 },
+  { type: "Delay", isValueAdded: false, time: 3, distance: 0 },
+  { type: "Operation", isValueAdded: true, time: 8, distance: 5 },
+];
 
 const Tabs = () => {
   const [activeTab, setActiveTab] = useState("shapes");
@@ -94,9 +103,9 @@ const Tabs = () => {
           <div className="absolute top-0 left-[calc(100%+12px)] bg-white border border-gray-300 rounded-xl shadow-lg p-5 w-[90vw] max-w-5xl transition-all">
             {activeTab === "shapes" && <Shapes />}
             {activeTab === "improvement" && <ProposedEnhancements />}
-            {activeTab === "summary" && (
-              <p className="text-sm text-gray-700">Summary component yakında eklenecek...</p>
-            )}
+            {activeTab === "summary" && <Summary steps={flowSteps} />}
+
+
           </div>
         )}
       </div>
