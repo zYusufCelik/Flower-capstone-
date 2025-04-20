@@ -3,13 +3,22 @@ using backend.Data;
 using backend.Models;
 using AutoMapper;
 using backend.Dtos;
-using Microsoft.VisualBasic;
+using backend.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 🔥 CORS EKLENDİ
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddAutoMapper(typeof(Program));
-
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -28,18 +37,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); 
 }
 
-//chart kaydetme
-app.MapPost("/saveChart", async (Chart chart, ApplicationDbContext dbContext, IMapper mapper) => {
+// ✅ CORS Middleware aktif edildi
+app.UseCors("AllowAll");
 
-    var chartDto = mapper.Map<ChartRequestDto>(chart);
-    
-    dbContext.Charts.Add(chart);
-    await dbContext.SaveChangesAsync();
-
-    return Results.Created($"/newChart/{chart.Id}", chartDto);
-});
-
-// Tüm Chartların dönmesi (test için yazılmıştır)
 app.MapGet("/charts", async (ApplicationDbContext dbContext, IMapper mapper) =>
 {
     var charts = await dbContext.Charts
@@ -50,26 +50,43 @@ app.MapGet("/charts", async (ApplicationDbContext dbContext, IMapper mapper) =>
     return Results.Ok(chartDtos);
 });
 
-// Chartı silme api
-app.MapDelete("/deleteChart/{id:int}", async (int id, ApplicationDbContext dbContext, IMapper mapper) =>
-{
-    var chart = await dbContext.Charts
-        .Include(c => c.Processes) 
-        .FirstOrDefaultAsync(c => c.Id == id);
 
-    if (chart is null)
-        return Results.NotFound($"Chart with ID {id} not found.");
+//chart kaydetme
+app.MapPost("/saveChart", async (Chart chart, ApplicationDbContext dbContext) => {
+    var existing = await dbContext.Charts.Include(c => c.Processes).FirstOrDefaultAsync();
+    if (existing != null)
+    {
+        dbContext.Charts.Remove(existing);
+        await dbContext.SaveChangesAsync();
+    }
 
-    // DTO'ya dönüştürme
-    var chartDto = mapper.Map<ChartResponseDto>(chart);
-
-    dbContext.Charts.Remove(chart);
+    dbContext.Charts.Add(chart);
     await dbContext.SaveChangesAsync();
 
-    return Results.Ok(chartDto); 
+    var summary = ChartSummaryHelper.GenerateSummary(chart);
+
+    return Results.Ok(new {
+        chartId = chart.Id,
+        summary
+    });
 });
 
+// Chartı silme api
+// app.MapDelete("/deleteChart/{id:int}", async (int id, ApplicationDbContext dbContext, IMapper mapper) =>
+// {
+//     var chart = await dbContext.Charts
+//         .Include(c => c.Processes) 
+//         .FirstOrDefaultAsync(c => c.Id == id);
 
-    
+//     if (chart is null)
+//         return Results.NotFound($"Chart with ID {id} not found.");
+
+//     var chartDto = mapper.Map<ChartResponseDto>(chart);
+
+//     dbContext.Charts.Remove(chart);
+//     await dbContext.SaveChangesAsync();
+
+//     return Results.Ok(chartDto); 
+// });
 
 app.Run();

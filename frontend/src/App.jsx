@@ -1,29 +1,27 @@
-import { useState } from "react";
-import Tabs from "./components/tabComponents/Tab";
-import ProcessForm from "./components/chartComponents/ProcessForm";
-import ChartForm from "./components/chartComponents/ChartForm";
-import Summary from "./components/tabComponents/Summary"; // 👈 Summary'yi de dahil ettik
+
+
+import React, { useState } from 'react';
+import ChartBuilder from './components/chartComponents/ChartBuilder';
+import Tab from './components/tabComponents/Tab';
 
 function App() {
-  const [steps, setSteps] = useState([]);
-
-  const handleAddStep = (step) => {
-    setSteps((prevSteps) => [...prevSteps, step]);
-  };
+  const [summaryData, setSummaryData] = useState(null);
+  const [activeTab, setActiveTab] = useState('SHAPES');
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 space-y-8 relative">
-      {/* Tabs */}
-      <Tabs steps={steps} />
+    <div className="flex w-screen h-screen bg-gray-100">
+      {/* Sol taraf */}
+      <div className="w-[40%] h-screen bg-white text-white overflow-y-auto p-4">
+        <Tab summary={summaryData} activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
 
-      {/* Adım ekleme formu */}
-      <ProcessForm onAddStep={handleAddStep} />
-
-      {/* Adımların listesi */}
-      <ChartForm steps={steps} />
-
-      {/* Özet bilgileri gösteren kısım */}
-      <Summary steps={steps} />
+      {/* Sağ taraf */}
+      <div className="w-[60%] bg-white flex justify-center items-start p-6 overflow-scroll">
+        <ChartBuilder
+          onSetSummary={setSummaryData}
+          onSetTab={setActiveTab}
+        />
+      </div>
     </div>
   );
 }

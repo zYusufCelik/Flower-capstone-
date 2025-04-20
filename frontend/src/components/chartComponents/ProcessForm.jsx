@@ -1,94 +1,113 @@
-import React, { useState } from "react";
 
-const ProcessForm = ({ onAddStep }) => {
-  const [form, setForm] = useState({
-    type: "Operation",
-    isValueAdded: true,
-    time: "",
-    distance: ""
-  });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm({ ...form, [name]: type === "checkbox" ? checked : value });
-  };
+import React from 'react';
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.time || !form.distance) return;
+const shapeOptions = [
+  { value: 'circle', label: '●', colorClass: 'bg-green-500 text-white' },
+  { value: 'arrow', label: '→', colorClass: 'bg-orange-500 text-white' },
+  { value: 'square', label: '■', colorClass: 'bg-blue-500 text-white' },
+  { value: 'half', label: '◐', colorClass: 'bg-yellow-400 text-black' },
+  { value: 'triangle', label: '▼', colorClass: 'bg-purple-600 text-white' },
+];
 
-    onAddStep({
-      ...form,
-      time: parseFloat(form.time),
-      distance: parseFloat(form.distance)
-    });
-
-    setForm({ ...form, time: "", distance: "" }); // temizle
+const ProcessForm = ({ data, onChange, onDelete }) => {
+  const updateField = (field, value) => {
+    onChange({ ...data, [field]: value });
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white/80 backdrop-blur-md p-6 rounded-xl shadow-xl max-w-xl mx-auto space-y-4 border border-gray-200"
-    >
-      <h2 className="text-xl font-bold text-center text-gray-800">Add New Process Step</h2>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Step Type</label>
-        <select
-          name="type"
-          value={form.type}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded px-3 py-2"
-        >
-          <option>Operation</option>
-          <option>Inspection</option>
-          <option>Transportation</option>
-          <option>Delay</option>
-          <option>Storage</option>
-        </select>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          name="isValueAdded"
-          checked={form.isValueAdded}
-          onChange={handleChange}
-          className="accent-blue-600"
-        />
-        <label className="text-sm text-gray-700">Value-Added Step</label>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Time (minutes)</label>
-        <input
-          type="number"
-          name="time"
-          value={form.time}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded px-3 py-2"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Distance (meters)</label>
-        <input
-          type="number"
-          name="distance"
-          value={form.distance}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded px-3 py-2"
-        />
-      </div>
-
+    <div className="relative w-full mx-0 mb-4">
+      {/* Delete icon */}
       <button
-        type="submit"
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-medium transition"
+        onClick={onDelete}
+        className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow hover:bg-red-600 z-10"
+        title="Delete"
       >
-        Add Step
+        ×
       </button>
-    </form>
+
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 justify-center gap-6 w-full border border-gray-300 bg-white p-3 rounded shadow-sm text-xs">
+          
+          {/* Process */}
+          <div className="flex flex-col items-center justify-between w-full h-[75px]">
+            <label className="text-gray-700 text-center h-[20px] flex items-end justify-center">Process</label>
+            <textarea
+              className="border px-2 py-1 rounded resize-none h-[40px] w-full text-xs text-gray-900 bg-white placeholder-gray-400 text-center"
+              placeholder="Process Name"
+              value={data.processName}
+              onChange={(e) => updateField('processName', e.target.value)}
+            />
+          </div>
+
+          {/* Shape */}
+          <div className="flex flex-col items-center justify-between w-full h-[75px]">
+            <label className="text-gray-700 text-center h-[20px] flex items-end justify-center">Shape</label>
+            <div className="flex gap-1 flex-wrap justify-center">
+              {shapeOptions.map((shape) => {
+                const isSelected = data.shape === shape.value;
+                return (
+                  <button
+                    key={shape.value}
+                    onClick={() => updateField('shape', isSelected ? null : shape.value)}
+                    className={`w-6 h-6 flex items-center justify-center rounded border text-[13px] font-normal leading-none transition-colors duration-200
+                      ${isSelected ? shape.colorClass + ' border-black' : 'text-gray-500 border-gray-300 bg-white'}`}
+                  >
+                    {shape.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Time */}
+          <div className="flex flex-col items-center justify-between w-full h-[75px]">
+            <label className="text-gray-700 text-center h-[20px] flex items-end justify-center">Time</label>
+            <input
+              type="number"
+              className="border px-2 py-1 rounded w-[60px] h-[40px] text-xs text-gray-900 bg-white placeholder-gray-400 text-center"
+              placeholder="min"
+              value={data.time}
+              onChange={(e) => updateField('time', e.target.value)}
+            />
+          </div>
+
+          {/* Distance */}
+          <div className="flex flex-col items-center justify-between w-full h-[75px]">
+            <label className="text-gray-700 text-center h-[20px] flex items-end justify-center">Distance</label>
+            <input
+              type="number"
+              className="border px-2 py-1 rounded w-[60px] h-[40px] text-xs text-gray-900 bg-white placeholder-gray-400 text-center"
+              placeholder="m"
+              value={data.distance}
+              onChange={(e) => updateField('distance', e.target.value)}
+            />
+          </div>
+
+          {/* Value Added */}
+          <div className="flex flex-col items-center justify-between w-full h-[75px]">
+            <label className="text-gray-700 text-center h-[20px] flex items-end justify-center">Value Added</label>
+            <input
+              type="checkbox"
+              checked={data.valueAdded}
+              onChange={(e) => updateField('valueAdded', e.target.checked)}
+              className="w-6 h-6 mt-1 items-center"
+            />
+          </div>
+
+          {/* Non-Value Added */}
+          <div className="flex flex-col items-center justify-between w-full h-[75px]">
+            <label className="text-gray-700 text-center h-[20px] flex items-end justify-center">Non-Value Added</label>
+            <input
+              type="checkbox"
+              checked={data.nonValueAdded}
+              onChange={(e) => updateField('nonValueAdded', e.target.checked)}
+              className="w-6 h-6 mt-1"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -1,116 +1,40 @@
-import React, { useState, useRef, useEffect } from "react";
-import Shapes from "./Shapes";
-import ProposedEnhancements from "./ProposedEnhancements";
-import Summary from "./Summary";
 
-const flowSteps = [
-  { type: "Operation", isValueAdded: true, time: 10, distance: 5 },
-  { type: "Inspection", isValueAdded: false, time: 5, distance: 0 },
-  { type: "Transportation", isValueAdded: true, time: 7, distance: 20 },
-  { type: "Delay", isValueAdded: false, time: 3, distance: 0 },
-  { type: "Operation", isValueAdded: true, time: 8, distance: 5 },
-];
 
-const Tabs = () => {
-  const [activeTab, setActiveTab] = useState("shapes");
-  const [expanded, setExpanded] = useState(false);
-  const [position, setPosition] = useState({ x: 20, y: 100 }); // <-- daha yukarı başlasın
-  const tabRef = useRef(null);
-  const isDragging = useRef(false);
-  const offset = useRef({ x: 0, y: 0 });
+import React from 'react';
+import Shapes from './Shapes';
+import ProposedEnhancements from './ProposedEnhancements';
+import Summary from './Summary';
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (isDragging.current) {
-        setPosition({
-          x: e.clientX - offset.current.x,
-          y: e.clientY - offset.current.y,
-        });
-      }
-    };
+const TABS = ['SHAPES', 'PROPOSED ENHANCEMENT', 'SUMMARY'];
 
-    const handleMouseUp = () => {
-      isDragging.current = false;
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, []);
-
-  const startDragging = (e) => {
-    isDragging.current = true;
-    const rect = tabRef.current.getBoundingClientRect();
-    offset.current = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
-  };
-
+const Tab = ({ summary, activeTab, setActiveTab }) => {
   return (
-    <div
-      ref={tabRef}
-      className="group z-50 fixed"
-      style={{ left: position.x, top: position.y }}
-      onMouseDown={startDragging} // <--- sürüklemeyi başlat
-    >
-      <div className="flex items-start space-x-2">
-        {/* Sol sekme butonları */}
-        <div className="flex flex-col space-y-1 border border-black p-1 bg-white rounded">
+    <div className="h-full max-h-screen overflow-hidden flex flex-col bg-white text-black border border-gray-300 rounded-lg shadow-md">
+      {/* Tab Buttonları */}
+      <div className="sticky top-0 z-10 bg-white p-2 flex space-x-2 rounded-t-lg justify-center">
+        {TABS.map((tab) => (
           <button
-            onClick={() => setActiveTab("shapes")}
-            className={`px-4 py-1 text-sm border border-black w-40 rounded ${
-              activeTab === "shapes" ? "font-bold bg-gray-100" : ""
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 rounded-md font-medium transition-all duration-150 ${
+              activeTab === tab
+                ? 'bg-black text-white'
+                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
             }`}
           >
-            SHAPES
+            {tab}
           </button>
-          <button
-            onClick={() => setActiveTab("summary")}
-            className={`px-4 py-1 text-sm border border-black w-40 rounded ${
-              activeTab === "summary" ? "font-bold bg-gray-100" : ""
-            }`}
-          >
-            SUMMARY
-          </button>
-          <button
-            onClick={() => setActiveTab("improvement")}
-            className={`px-4 py-1 text-sm border border-black w-40 rounded ${
-              activeTab === "improvement" ? "font-bold bg-gray-100" : ""
-            }`}
-          >
-            IMPROVEMENT IDEAS
-          </button>
-        </div>
+        ))}
+      </div>
 
-        {/* Aç/Kapat butonu */}
-        <div>
-          <button
-            onClick={() => setExpanded((prev) => !prev)}
-            className="w-8 h-8 flex items-center justify-center border border-gray-400 rounded bg-white hover:bg-gray-100 transition"
-            title={expanded ? "Close Panel" : "Open Panel"}
-          >
-            {expanded ? "↙" : "↗"}
-          </button>
-        </div>
-
-        {/* İçerik */}
-        {expanded && (
-          <div className="absolute top-0 left-[calc(100%+12px)] bg-white border border-gray-300 rounded-xl shadow-lg p-5 w-[90vw] max-w-5xl transition-all">
-            {activeTab === "shapes" && <Shapes />}
-            {activeTab === "improvement" && <ProposedEnhancements />}
-            {activeTab === "summary" && <Summary steps={flowSteps} />}
-
-
-          </div>
-        )}
+      {/* İçerik */}
+      <div className="overflow-y-auto p-4 flex-1">
+        {activeTab === 'SHAPES' && <Shapes />}
+        {activeTab === 'PROPOSED ENHANCEMENT' && <ProposedEnhancements />}
+        {activeTab === 'SUMMARY' && summary && <Summary summary={summary} />}
       </div>
     </div>
   );
 };
 
-export default Tabs;
+export default Tab;

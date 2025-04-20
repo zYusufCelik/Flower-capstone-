@@ -1,29 +1,37 @@
+
+
 import React from "react";
 
 const Shapes = () => {
   const shapes = [
     {
-      icon: <div className="w-4 h-4 bg-green-500 rounded-full"></div>,
+      icon: <div className="w-6 h-6 bg-green-600 rounded-full" />,
       name: "Operation",
       description:
         "An action. One of the steps in the procedure. Any operation for making, altering or changing. Eg. Drilling a hole, cutting, shaping.",
     },
     {
-      icon: <div className="w-4 h-4 bg-blue-500"></div>,
+      icon: <div className="w-6 h-6 bg-blue-500 rounded" />,
       name: "Inspection",
       description:
         "Represents checking for quality and quantity of the items. Eg. Weight check, examine printed form for information.",
     },
     {
-      icon: <span className="text-orange-500 text-lg">→</span>,
+      icon: (
+        <div className="w-6 h-6 flex items-center justify-center">
+          <div className="w-3 h-[3px] bg-orange-500" />
+          <div className="w-0 h-0 border-t-[4px] border-b-[4px] border-l-[6px] border-t-transparent border-b-transparent border-l-orange-500 ml-[2px]" />
+        </div>
+      ),
       name: "Transportation",
       description:
         "Movement of workers or materials. Eg. Move material by truck or conveyor.",
     },
     {
       icon: (
-        <div className="w-4 h-4 bg-yellow-400 rounded-full relative overflow-hidden">
-          <div className="absolute left-0 top-0 w-1/2 h-full bg-white"></div>
+        <div className="w-6 h-6 rounded-full relative overflow-hidden flex">
+          <div className="w-1/2 h-full bg-yellow-400 rounded-l-full" />
+          <div className="w-1/2 h-full bg-white rounded-r-full" />
         </div>
       ),
       name: "Delay",
@@ -32,41 +40,36 @@ const Shapes = () => {
     },
     {
       icon: (
-        <div className="w-4 h-4 bg-purple-500 clip-triangle-down"></div>
+        <div className="w-6 h-6 flex items-center justify-center">
+          <div className="w-0 h-0 border-l-[8px] border-r-[8px] border-t-[10px] border-l-transparent border-r-transparent border-t-purple-600" />
+        </div>
       ),
       name: "Storage",
-      description: "Represents a storage or holding step.",
+      description:
+        "The stage of a finished good or a material waiting for an action. Eg. Finished products stacked on pallets.",
     },
   ];
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
-      <h3 className="text-xl font-semibold mb-6 text-center">SHAPES</h3>
+    <div className="w-full p-3 text-black bg-white mt-0">
 
       <div className="space-y-4">
-        {shapes.map((shape, index) => (
+        {shapes.map((shape, i) => (
           <div
-            key={index}
-            className="flex items-center border border-gray-200 rounded-md p-4 bg-white shadow-sm hover:shadow-md transition"
+            key={i}
+            className="flex items-center gap-4 border border-black p-2"
           >
-            {/* Icon */}
-            <div className="mr-4 flex items-center justify-center w-5 h-5">
-              {shape.icon}
+            {/* Sol blok: Icon + Name */}
+            <div className="flex items-center w-[200px] gap-3">
+              <div className="w-8 h-8 flex items-center justify-center">{shape.icon}</div>
+              <div className="border border-black px-3 py-1 text-sm font-medium text-center whitespace-nowrap">
+                {shape.name}
+              </div>
             </div>
 
-            {/* Name + Description */}
-            <div className="flex items-start w-full">
-              {/* Name */}
-              <div className="w-32">
-                <span className="font-semibold text-sm text-gray-900 bg-gray-100 border border-gray-300 rounded-md px-3 py-1 inline-block text-center">
-                  {shape.name}
-                </span>
-              </div>
-
-              {/* Description */}
-              <p className="text-sm text-gray-700 leading-snug ml-4">
-                {shape.description}
-              </p>
+            {/* Sağ blok: Açıklama */}
+            <div className="flex-1 border border-black px-3 py-2 text-sm">
+              {shape.description}
             </div>
           </div>
         ))}

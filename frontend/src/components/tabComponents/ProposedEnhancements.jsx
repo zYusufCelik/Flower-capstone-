@@ -1,132 +1,81 @@
+
+
 import React from "react";
 
 const ProposedEnhancements = () => {
-  const rows = [
+  const data = [
     {
       label: "PURPOSE",
-      questions: [
-        "What is actually done?",
-        "Why is the activity necessary at all?",
-      ],
-      suggestion: {
-        title: "ELIMINATE",
-        desc: "unnecessary parts of the job",
-      },
-      leftBracket: true,
-      rightBracket: false,
+      question1: "What is actually done?",
+      question2: "Why is the activity necessary at all?",
+      suggestionTitle: "ELIMINATE",
+      suggestionDesc: "unnecessary parts of the job",
     },
     {
       label: "PLACE",
-      questions: [
-        "Where is it being done? Why is it done at that particular place?",
-      ],
-      suggestion: {
-        title: "COMBINE",
-        desc: "wherever possible or REARRANGE the sequence of operations for more effective results.",
-      },
-      leftBracket: false,
-      rightBracket: true,
-      rightBracketGroup: "group1",
+      question1: "Where is it being done?",
+      question2: "Why is it done at that particular place?",
     },
     {
       label: "SEQUENCE",
-      questions: [
-        "When is it done? Why is it done at that particular time?",
-      ],
-      suggestion: null,
-      leftBracket: false,
-      rightBracket: true,
-      rightBracketGroup: "group1",
+      question1: "When is it done?",
+      question2: "Why is it done at that particular time?",
+      suggestionTitle: "COMBINE",
+      suggestionDesc: "wherever possible or REARRANGE the sequence of operations for more effective results.",
     },
     {
       label: "PERSON",
-      questions: [
-        "Who is doing it? Why is it done by that particular person?",
-      ],
-      suggestion: null,
-      leftBracket: false,
-      rightBracket: true,
-      rightBracketGroup: "group1",
+      question1: "Who is doing it?",
+      question2: "Why is it done by that particular person?",
     },
     {
       label: "MEANS",
-      questions: [
-        "How is it being done? Why is it being done in that particular way?",
-      ],
-      suggestion: {
-        title: "SIMPLIFY",
-        desc: "the operation.",
-      },
-      leftBracket: false,
-      rightBracket: true,
-      rightBracketGroup: "single",
+      question1: "How is it being done?",
+      question2: "Why is it being done in that particular way?",
+      suggestionTitle: "SIMPLIFY",
+      suggestionDesc: "the operation.",
     },
   ];
 
-  const highlightKeywords = (text) => {
-    return text.split(/(What|Why|Where|When|Who|How)/g).map((part, idx) => {
-      if (["What", "Why", "Where", "When", "Who", "How"].includes(part)) {
-        return (
-          <span key={idx} className="font-bold">
-            {part}
-          </span>
-        );
-      }
-      return <span key={idx}>{part}</span>;
+  const highlight = (text) =>
+    text.split(/(What|Why|Where|When|Who|How|REARRANGE)/g).map((part, i) => {
+      const isKeyword = ["What", "Why", "Where", "When", "Who", "How", "REARRANGE"].includes(part);
+      return (
+        <span key={i} className={isKeyword ? "font-bold" : ""}>
+          {part}
+        </span>
+      );
     });
-  };
 
   return (
-    <div className="max-w-5xl w-full mx-auto p-6 bg-white rounded-xl shadow-md border border-gray-200">
-      <h2 className="font-bold mb-6 text-center text-lg text-gray-800">
+    <div className="w-full max-w-6xl mx-auto p-6 bg-white border border-gray-300 rounded">
+      <h2 className="text-center font-bold text-lg mb-6">
         TO IMPROVE YOUR PROCESS ASK THE FOLLOWINGS:
       </h2>
 
-      <div className="space-y-6 relative">
-        {rows.map((row, index) => (
-          <div key={index} className="flex items-start space-x-4 relative">
-            <div className="w-32 font-bold text-right text-sm pt-1 text-gray-800">
-              {row.label}
+      <div className="grid grid-cols-[150px_1fr_180px] gap-x-6 gap-y-6 text-sm text-gray-800">
+        {data.map((item, idx) => (
+          <React.Fragment key={idx}>
+            <div className="font-bold uppercase">{item.label}</div>
+
+            <div className="space-y-1">
+              <p>{highlight(item.question1)}</p>
+              <p>{highlight(item.question2)}</p>
             </div>
 
-            <div className="relative flex-1">
-              {row.leftBracket && (
-                <div className="absolute -left-4 text-2xl text-gray-400 font-bold">
-                  [
-                </div>
-              )}
-              <div className="ml-4 space-y-1">
-                {row.questions.map((q, i) => (
-                  <p key={i} className="text-sm leading-tight text-gray-700">
-                    {highlightKeywords(q)}
-                  </p>
-                ))}
-              </div>
-            </div>
-
-            <div className="w-52 text-sm relative">
-              {row.rightBracket && row.rightBracketGroup === "group1" && (
-                <div className="absolute -left-2 top-0 text-4xl text-gray-400 font-bold">
-                  ]
-                </div>
-              )}
-              {row.rightBracket && row.rightBracketGroup === "single" && (
-                <div className="absolute -left-2 top-0 text-2xl text-gray-400 font-bold">
-                  ]
-                </div>
-              )}
-              {row.suggestion && (
+            <div>
+              {item.suggestionTitle && (
                 <>
-                  <div className="font-bold text-sm mb-1 text-gray-800">
-                    {row.suggestion.title}
-                  </div>
-                  <div className="text-gray-700 leading-tight">
-                    {row.suggestion.desc}
-                  </div>
+                  <div className="font-bold">{item.suggestionTitle}</div>
+                  <div>{highlight(item.suggestionDesc)}</div>
                 </>
               )}
             </div>
-          </div>
+
+            {(item.label === "PURPOSE" || item.label === "PERSON") && (
+              <div className="col-span-3 border-b border-gray-300 my-2" />
+            )}
+          </React.Fragment>
         ))}
       </div>
     </div>

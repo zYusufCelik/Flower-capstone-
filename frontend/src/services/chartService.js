@@ -11,13 +11,13 @@ export const saveChart = async (chartRequest) => {
     }
   };
   
-  // Chart silme
-  export const deleteChart = async (id) => {
-    try {
-      const response = await axiosInstance.delete(`/deleteChart/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error('Chart silme hatası:', error);
-      throw error;
-    }
-  };
+  // // Chart silme
+  // export const deleteChart = async (id) => {
+  //   try {
+  //     const response = await axiosInstance.delete(`/deleteChart/${id}`);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Chart silme hatası:', error);
+  //     throw error;
+  //   }
+  // };
