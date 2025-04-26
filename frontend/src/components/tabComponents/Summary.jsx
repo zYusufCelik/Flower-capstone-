@@ -1,43 +1,118 @@
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
-import { Document, Packer, Paragraph } from "docx";
+import { Document, Packer, Paragraph, TextRun } from "docx";
 import { saveAs } from "file-saver";
 
 const Summary = ({ summary }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const formatSummaryText = () => {
-    return `
-Total Time: ${summary.totalTime} min
-Total Distance: ${summary.totalDistance} m
-Value Added: ${summary.valueAddedCount} (${summary.valueAddedPercentage}%)
-Non-Value Added: ${summary.nonValueAddedCount} (${
-      summary.nonValueAddedPercentage
-    }%)
-
-Shapes Summary:
-${summary.shapes
-  .map(
-    (shape) =>
-      `${shape.name} (${shape.shape}) - ${shape.count} step(s) - ${shape.percentage}%`
-  )
-  .join("\n")}
-    `;
-  };
-
+  // 🟢 PDF OLUŞTURMA
   const handleDownloadPDF = () => {
+    if (!summary) {
+      alert("Summary is missing!");
+      return;
+    }
+
     const doc = new jsPDF();
-    doc.text(formatSummaryText(), 10, 10);
+
+    // Başlık
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("Summary Report", 10, 20);
+
+    // General Info
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text("General Information:", 10, 35);
+    doc.line(10, 37, 200, 37);
+
+    doc.text(`Total Time: ${summary.totalTime} min`, 10, 45);
+    doc.text(`Total Distance: ${summary.totalDistance} m`, 10, 55);
+    doc.text(
+      `Value Added: ${summary.valueAddedCount} (${summary.valueAddedPercentage}%)`,
+      10,
+      65
+    );
+    doc.text(
+      `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`,
+      10,
+      75
+    );
+
+    // Shapes Summary
+    doc.text("Shapes Summary:", 10, 90);
+    doc.line(10, 92, 200, 92);
+
+    summary.shapes.forEach((shape, index) => {
+      doc.text(
+        `• ${shape.name} (${shape.shape}): ${shape.count} step(s) - ${shape.percentage}%`,
+        15,
+        100 + index * 10
+      );
+    });
+
     doc.save("summary.pdf");
     setIsModalOpen(false);
   };
 
+  // 🟣 DOCX OLUŞTURMA
   const handleDownloadDOCX = () => {
+    if (!summary) {
+      alert("Summary is missing!");
+      return;
+    }
+
     const doc = new Document({
       sections: [
         {
-          properties: {},
-          children: [new Paragraph(formatSummaryText())],
+          children: [
+            // Başlık
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: "Summary Report",
+                  bold: true,
+                  size: 32, // 16pt
+                }),
+              ],
+              alignment: "center",
+              spacing: { after: 300 },
+            }),
+
+            // General Information
+            new Paragraph({
+              text: "General Information:",
+              heading: "Heading2",
+            }),
+            new Paragraph(`Total Time: ${summary.totalTime} min`),
+            new Paragraph(`Total Distance: ${summary.totalDistance} m`),
+            new Paragraph(
+              `Value Added: ${summary.valueAddedCount} (${summary.valueAddedPercentage}%)`
+            ),
+            new Paragraph(
+              `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`
+            ),
+
+            // Shapes Summary
+            new Paragraph({
+              text: "Shapes Summary:",
+              heading: "Heading2",
+              spacing: { before: 300 },
+            }),
+
+            // Shapes Bullet List
+            ...summary.shapes.map(
+              (shape) =>
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: `${shape.name} (${shape.shape}): ${shape.count} step(s) - ${shape.percentage}%`,
+                    }),
+                  ],
+                  bullet: { level: 0 },
+                })
+            ),
+          ],
         },
       ],
     });
