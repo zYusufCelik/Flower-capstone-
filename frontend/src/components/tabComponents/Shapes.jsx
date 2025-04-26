@@ -1,5 +1,3 @@
-
-
 import React from "react";
 
 const Shapes = () => {
@@ -52,28 +50,48 @@ const Shapes = () => {
 
   return (
     <div className="w-full p-3 text-black bg-white mt-0">
-
       <div className="space-y-4">
         {shapes.map((shape, i) => (
           <div
             key={i}
-            className="flex items-center gap-4 border border-black p-2"
+            className="flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-black p-2"
           >
             {/* Sol blok: Icon + Name */}
-            <div className="flex items-center w-[200px] gap-3">
-              <div className="w-8 h-8 flex items-center justify-center">{shape.icon}</div>
-              <div className="border border-black px-3 py-1 text-sm font-medium text-center whitespace-nowrap">
+            <div className="flex items-center w-full sm:w-[200px] gap-3 text-center sm:text-left">
+              <div className="w-8 h-8 flex items-center justify-center">
+                {shape.icon}
+              </div>
+              <div
+                className="border border-black px-3 py-1 text-sm font-medium text-center 
+    whitespace-normal sm:whitespace-nowrap 
+    break-words overflow-wrap break-word 
+    w-full sm:w-auto max-w-full 
+    min-w-0 overflow-hidden"
+              >
                 {shape.name}
               </div>
             </div>
 
             {/* Sağ blok: Açıklama */}
-            <div className="flex-1 border border-black px-3 py-2 text-sm">
+            <div
+              className="flex-1 border border-black px-3 py-2 text-sm 
+              break-words overflow-wrap break-word 
+              w-full max-w-full text-center sm:text-left"
+            >
               {shape.description}
             </div>
           </div>
         ))}
       </div>
+
+      {/* Ekstra responsive stil */}
+      <style jsx>{`
+        @media (max-width: 430px) {
+          .text-sm {
+            font-size: 0.7rem;
+          }
+        }
+      `}</style>
     </div>
   );
 };

@@ -1,5 +1,3 @@
-
-
 import React from "react";
 
 const ProposedEnhancements = () => {
@@ -21,7 +19,8 @@ const ProposedEnhancements = () => {
       question1: "When is it done?",
       question2: "Why is it done at that particular time?",
       suggestionTitle: "COMBINE",
-      suggestionDesc: "wherever possible or REARRANGE the sequence of operations for more effective results.",
+      suggestionDesc:
+        "wherever possible or REARRANGE the sequence of operations for more effective results.",
     },
     {
       label: "PERSON",
@@ -39,7 +38,15 @@ const ProposedEnhancements = () => {
 
   const highlight = (text) =>
     text.split(/(What|Why|Where|When|Who|How|REARRANGE)/g).map((part, i) => {
-      const isKeyword = ["What", "Why", "Where", "When", "Who", "How", "REARRANGE"].includes(part);
+      const isKeyword = [
+        "What",
+        "Why",
+        "Where",
+        "When",
+        "Who",
+        "How",
+        "REARRANGE",
+      ].includes(part);
       return (
         <span key={i} className={isKeyword ? "font-bold" : ""}>
           {part}
@@ -48,22 +55,22 @@ const ProposedEnhancements = () => {
     });
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-6 bg-white border border-gray-300 rounded">
-      <h2 className="text-center font-bold text-lg mb-6">
+    <div className="w-full max-w-6xl mx-auto p-6 bg-white border border-gray-300 rounded responsive-enhancement">
+      <h2 className="text-center font-bold text-lg mb-6 responsive-title break-words">
         TO IMPROVE YOUR PROCESS ASK THE FOLLOWINGS:
       </h2>
 
-      <div className="grid grid-cols-[150px_1fr_180px] gap-x-6 gap-y-6 text-sm text-gray-800">
+      <div className="grid grid-cols-1 md:grid-cols-[150px_1fr_180px] gap-x-6 gap-y-6 text-sm text-gray-800 responsive-text">
         {data.map((item, idx) => (
           <React.Fragment key={idx}>
-            <div className="font-bold uppercase">{item.label}</div>
+            <div className="font-bold uppercase break-words">{item.label}</div>
 
-            <div className="space-y-1">
+            <div className="space-y-1 break-words">
               <p>{highlight(item.question1)}</p>
               <p>{highlight(item.question2)}</p>
             </div>
 
-            <div>
+            <div className="break-words">
               {item.suggestionTitle && (
                 <>
                   <div className="font-bold">{item.suggestionTitle}</div>
@@ -73,11 +80,33 @@ const ProposedEnhancements = () => {
             </div>
 
             {(item.label === "PURPOSE" || item.label === "PERSON") && (
-              <div className="col-span-3 border-b border-gray-300 my-2" />
+              <div className="col-span-1 md:col-span-3 border-b border-gray-300 my-2" />
             )}
           </React.Fragment>
         ))}
       </div>
+
+      {/* Extra Responsive Styling */}
+      <style jsx>{`
+        @media (max-width: 430px) {
+          .responsive-title {
+            font-size: 1rem; /* Başlık küçüldü */
+          }
+          .responsive-text {
+            font-size: 0.7rem; /* Body text küçüldü */
+            gap: 0.5rem;
+          }
+          .responsive-enhancement {
+            padding: 1rem;
+          }
+          .responsive-enhancement,
+          .responsive-title,
+          .responsive-text {
+            word-break: break-word;
+            overflow-wrap: normal;
+          }
+        }
+      `}</style>
     </div>
   );
 };
