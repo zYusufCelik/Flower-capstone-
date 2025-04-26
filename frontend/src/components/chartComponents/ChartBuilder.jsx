@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import ProcessForm from './ProcessForm';
 import { saveChart } from '../../services/chartService';
+import { validateProcesses } from '../../utils/validationHelper';
+import {toast} from 'react-hot-toast'
 
 const ChartBuilder = ({ onSetSummary, onSetTab }) => {
   const [chartName, setChartName] = useState('');
@@ -32,26 +34,40 @@ const ChartBuilder = ({ onSetSummary, onSetTab }) => {
   };
 
   const handleSaveChart = async () => {
+    // Validation
+    const validationErrors = validateProcesses(processes);
+    if (validationErrors.length > 0) {
+      toast.error(validationErrors[0]);
+      return;
+    }
+  
     try {
+      const cleanedProcesses = processes.map(p => ({
+        ...p,
+        time: p.time === "" ? null : Number(p.time),
+        distance: p.distance === "" ? null : Number(p.distance)
+      }));
+  
       const chartPayload = {
         name: chartName,
-        processes: processes,
+        processes: cleanedProcesses,  
       };
-
+  
       const result = await saveChart(chartPayload);
+  
       if (result && result.summary) {
         onSetSummary(result.summary);
         onSetTab("SUMMARY");
-        alert("Chart başarıyla kaydedildi!");
+        toast.success("Chart başarıyla kaydedildi!");
       } else {
-        alert("Kaydedildi ama özet alınamadı.");
+        toast("Kaydedildi ama özet alınamadı.", { icon: '⚠️' });
       }
     } catch (error) {
       console.error("Chart kaydederken hata:", error);
-      alert("Bir hata oluştu.");
+      toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
     }
   };
-
+  
   return (
     <div className="w-full max-w-[1000px]">
       {/* Chart Name */}

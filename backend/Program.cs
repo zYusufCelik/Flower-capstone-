@@ -7,7 +7,6 @@ using backend.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔥 CORS EKLENDİ
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -37,7 +36,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); 
 }
 
-// ✅ CORS Middleware aktif edildi
 app.UseCors("AllowAll");
 
 app.MapGet("/charts", async (ApplicationDbContext dbContext, IMapper mapper) =>

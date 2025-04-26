@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import ChartBuilder from "./components/chartComponents/ChartBuilder";
 import Tab from "./components/tabComponents/Tab";
+import { Toaster } from 'react-hot-toast';
+
 
 function App() {
   const [summaryData, setSummaryData] = useState(null);
@@ -8,6 +10,32 @@ function App() {
 
   return (
     <div className="flex flex-col md:flex-row w-screen h-screen bg-gray-100">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          success: {
+            style: {
+              background: 'green',
+              color: 'white',
+            },
+            iconTheme: {
+              primary: 'white',
+              secondary: 'green',
+            },
+          },
+          error: {
+            style: {
+              background: 'red',
+              color: 'white',
+            },
+            iconTheme: {
+              primary: 'white',
+              secondary: 'red',
+            },
+          },
+          duration: 4000,
+        }}
+      />
       {/* Sol taraf: Tabs */}
       <div className="w-full md:w-[40%] h-auto md:h-screen bg-white text-white overflow-y-auto p-4">
         <Tab

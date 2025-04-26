@@ -69,6 +69,7 @@ const ProcessForm = ({ data, onChange, onDelete }) => {
               placeholder="min"
               value={data.time}
               onChange={(e) => updateField('time', e.target.value)}
+              disabled={data.shape === 'arrow'} 
             />
           </div>
 
@@ -81,6 +82,7 @@ const ProcessForm = ({ data, onChange, onDelete }) => {
               placeholder="m"
               value={data.distance}
               onChange={(e) => updateField('distance', e.target.value)}
+              disabled={data.shape !== 'arrow'} 
             />
           </div>
 
