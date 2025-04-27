@@ -1,35 +1,61 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import ChartBuilder from "./components/chartComponents/ChartBuilder";
+import Tab from "./components/tabComponents/Tab";
+import { Toaster } from 'react-hot-toast';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [summaryData, setSummaryData] = useState(null);
+  const [activeTab, setActiveTab] = useState("SHAPES");
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex flex-col md:flex-row w-screen h-screen bg-gray-100">
+      
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          success: {
+            style: {
+              background: 'green',
+              color: 'white',
+            },
+            iconTheme: {
+              primary: 'white',
+              secondary: 'green',
+            },
+          },
+          error: {
+            style: {
+              background: 'red',
+              color: 'white',
+            },
+            iconTheme: {
+              primary: 'white',
+              secondary: 'red',
+            },
+          },
+          duration: 4000,
+        }}
+      />
+
+      {/* Sol taraf: Tabs */}
+      <div className="w-full md:w-[40%] h-auto md:h-screen bg-white text-white overflow-y-auto p-4">
+        <Tab
+          summary={summaryData}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
       </div>
-      <h1 className='text-red-500'>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+
+      {/* Sağ taraf: ChartBuilder */}
+      <div className="w-full md:w-[60%] bg-white flex flex-col items-end relative p-6 overflow-y-auto">
+        {/* ChartBuilder içerik */}
+        <div className="w-full flex justify-center items-start">
+          <ChartBuilder onSetSummary={setSummaryData} onSetTab={setActiveTab} />
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+    </div>
+  );
 }
 
-export default App
+export default App;
