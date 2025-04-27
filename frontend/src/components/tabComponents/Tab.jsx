@@ -4,7 +4,7 @@ import ProposedEnhancements from "./ProposedEnhancements";
 import Summary from "./Summary";
 import VideoEmbed from "./VideoEmbed";
 
-const TABS = ["SHAPES", "PROPOSED ENHANCEMENT", "SUMMARY", "VIDEO"];
+const TABS = ["SHAPES", "IMPROVEMENT IDEAS", "SUMMARY", "VIDEO"];
 
 const Tab = ({ summary, activeTab, setActiveTab }) => {
   return (
@@ -31,7 +31,7 @@ const Tab = ({ summary, activeTab, setActiveTab }) => {
       {/* Content */}
       <div className="overflow-y-auto p-4 flex-1">
         {activeTab === "SHAPES" && <Shapes />}
-        {activeTab === "PROPOSED ENHANCEMENT" && <ProposedEnhancements />}
+        {activeTab === "IMPROVEMENT IDEAS" && <ProposedEnhancements />}
         {activeTab === "SUMMARY" && summary && <Summary summary={summary} />}
         {activeTab === "VIDEO" && <VideoEmbed />}
       </div>
