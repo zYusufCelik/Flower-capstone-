@@ -10,7 +10,7 @@ const Tab = ({ summary, activeTab, setActiveTab }) => {
   return (
     <div className="h-full max-h-screen overflow-hidden flex flex-col bg-white text-black border border-gray-300 rounded-lg shadow-md">
       {/* Tab Buttons */}
-      <div className="sticky top-0 z-10 bg-white p-2 flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 rounded-t-lg justify-center">
+      <div className="sticky top-0 z-10 bg-white p-2 flex flex-nowrap overflow-x-auto overflow-y-hidden space-x-2 rounded-t-lg">
         {TABS.map((tab) => (
           <button
             key={tab}

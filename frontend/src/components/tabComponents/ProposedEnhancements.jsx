@@ -1,3 +1,4 @@
+
 import React from "react";
 
 const ProposedEnhancements = () => {
@@ -55,21 +56,24 @@ const ProposedEnhancements = () => {
     });
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-6 bg-white border border-gray-300 rounded responsive-enhancement">
-      <h2 className="text-center font-bold text-lg mb-6 responsive-title break-words">
+    <div className="w-full max-w-6xl mx-auto p-6 bg-white border border-gray-300 rounded">
+      <h2 className="text-center font-bold text-lg mb-6 break-words">
         TO IMPROVE YOUR PROCESS ASK THE FOLLOWINGS:
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-[150px_1fr_180px] gap-x-6 gap-y-6 text-sm text-gray-800 responsive-text">
+      <div className="grid grid-cols-1 lg:grid-cols-[150px_1fr_180px] gap-x-6 gap-y-6 text-sm text-gray-800">
         {data.map((item, idx) => (
           <React.Fragment key={idx}>
+            {/* Label */}
             <div className="font-bold uppercase break-words">{item.label}</div>
 
+            {/* Sorular */}
             <div className="space-y-1 break-words">
               <p>{highlight(item.question1)}</p>
               <p>{highlight(item.question2)}</p>
             </div>
 
+            {/* Öneri */}
             <div className="break-words">
               {item.suggestionTitle && (
                 <>
@@ -79,34 +83,13 @@ const ProposedEnhancements = () => {
               )}
             </div>
 
+            {/* Altına çizgi çekiyoruz bazılarına */}
             {(item.label === "PURPOSE" || item.label === "PERSON") && (
-              <div className="col-span-1 md:col-span-3 border-b border-gray-300 my-2" />
+              <div className="col-span-1 lg:col-span-3 border-b border-gray-300 my-2" />
             )}
           </React.Fragment>
         ))}
       </div>
-
-      {/* Extra Responsive Styling */}
-      <style jsx>{`
-        @media (max-width: 430px) {
-          .responsive-title {
-            font-size: 1rem; /* Başlık küçüldü */
-          }
-          .responsive-text {
-            font-size: 0.7rem; /* Body text küçüldü */
-            gap: 0.5rem;
-          }
-          .responsive-enhancement {
-            padding: 1rem;
-          }
-          .responsive-enhancement,
-          .responsive-title,
-          .responsive-text {
-            word-break: break-word;
-            overflow-wrap: normal;
-          }
-        }
-      `}</style>
     </div>
   );
 };

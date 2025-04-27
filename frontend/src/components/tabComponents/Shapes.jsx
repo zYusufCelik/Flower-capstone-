@@ -1,3 +1,4 @@
+
 import React from "react";
 
 const Shapes = () => {
@@ -6,13 +7,13 @@ const Shapes = () => {
       icon: <div className="w-6 h-6 bg-green-600 rounded-full" />,
       name: "Operation",
       description:
-        "An action. One of the steps in the procedure. Any operation for making, altering or changing. Eg. Drilling a hole, cutting, shaping.",
+      "An action. One of the steps in the procedure. Any operation for making, altering or changing. Eg. Drilling a hole, cutting, shaping.",
     },
     {
       icon: <div className="w-6 h-6 bg-blue-500 rounded" />,
       name: "Inspection",
       description:
-        "Represents checking for quality and quantity of the items. Eg. Weight check, examine printed form for information.",
+      "Represents checking for quality and quantity of the items. Eg. Weight check, examine printed form for information.",
     },
     {
       icon: (
@@ -23,18 +24,18 @@ const Shapes = () => {
       ),
       name: "Transportation",
       description:
-        "Movement of workers or materials. Eg. Move material by truck or conveyor.",
+        "Movement of workers or materials, e.g., by truck or conveyor.",
     },
     {
       icon: (
-        <div className="w-6 h-6 rounded-full relative overflow-hidden flex">
+        <div className="w-6 h-6 rounded-full overflow-hidden flex">
           <div className="w-1/2 h-full bg-yellow-400 rounded-l-full" />
           <div className="w-1/2 h-full bg-white rounded-r-full" />
         </div>
       ),
       name: "Delay",
       description:
-        "Delay means the process has stopped due to some reason. Eg. Waiting for elevator, materials waiting on floor to be processed.",
+      "Delay means the process has stopped due to some reason. Eg. Waiting for elevator, materials waiting on floor to be processed.",
     },
     {
       icon: (
@@ -44,56 +45,36 @@ const Shapes = () => {
       ),
       name: "Storage",
       description:
-        "The stage of a finished good or a material waiting for an action. Eg. Finished products stacked on pallets.",
+        "Holding stage for goods, e.g., products stacked on pallets.",
     },
   ];
 
   return (
-    <div className="w-full p-3 text-black bg-white mt-0">
-      <div className="space-y-4">
-        {shapes.map((shape, i) => (
-          <div
-            key={i}
-            className="flex flex-col sm:flex-row items-center sm:items-start gap-4 border border-black p-2"
-          >
-            {/* Sol blok: Icon + Name */}
-            <div className="flex items-center w-full sm:w-[200px] gap-3 text-center sm:text-left">
-              <div className="w-8 h-8 flex items-center justify-center">
-                {shape.icon}
-              </div>
-              <div
-                className="border border-black px-3 py-1 text-sm font-medium text-center 
-    whitespace-normal sm:whitespace-nowrap 
-    break-words overflow-wrap break-word 
-    w-full sm:w-auto max-w-full 
-    min-w-0 overflow-hidden"
-              >
-                {shape.name}
-              </div>
+    <div className="w-full p-4 text-black bg-white space-y-4">
+      {shapes.map((shape, i) => (
+        <div
+          key={i}
+          className="flex flex-col lg:flex-row gap-3 border border-gray-300 p-4 rounded-md overflow-hidden"
+        >
+          {/* Üst: ikon + isim */}
+          <div className="flex items-center gap-3 w-full lg:w-[220px] shrink-0">
+            <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
+              {shape.icon}
             </div>
-
-            {/* Sağ blok: Açıklama */}
-            <div
-              className="flex-1 border border-black px-3 py-2 text-sm 
-              break-words overflow-wrap break-word 
-              w-full max-w-full text-center sm:text-left"
-            >
-              {shape.description}
+            <div className="border border-gray-400 px-3 py-1 rounded text-sm font-medium text-center w-full break-words">
+              {shape.name}
             </div>
           </div>
-        ))}
-      </div>
 
-      {/* Ekstra responsive stil */}
-      <style jsx>{`
-        @media (max-width: 430px) {
-          .text-sm {
-            font-size: 0.7rem;
-          }
-        }
-      `}</style>
+          {/* Alt: açıklama */}
+          <div className="w-full lg:flex-1 border border-gray-300 p-3 rounded text-sm text-center lg:text-left break-words">
+            {shape.description}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
 
 export default Shapes;
+

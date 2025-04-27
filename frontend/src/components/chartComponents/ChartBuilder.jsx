@@ -34,7 +34,13 @@ const ChartBuilder = ({ onSetSummary, onSetTab }) => {
   };
 
   const handleSaveChart = async () => {
-    // Validation
+    // Check Chart Name
+    if (!chartName || chartName.trim() === "") {
+      toast.error("Chart name is required.");
+      return;
+    }
+  
+    // Validate Processes
     const validationErrors = validateProcesses(processes);
     if (validationErrors.length > 0) {
       toast.error(validationErrors[0]);
@@ -50,7 +56,7 @@ const ChartBuilder = ({ onSetSummary, onSetTab }) => {
   
       const chartPayload = {
         name: chartName,
-        processes: cleanedProcesses,  
+        processes: cleanedProcesses,
       };
   
       const result = await saveChart(chartPayload);
@@ -58,13 +64,13 @@ const ChartBuilder = ({ onSetSummary, onSetTab }) => {
       if (result && result.summary) {
         onSetSummary(result.summary);
         onSetTab("SUMMARY");
-        toast.success("Chart başarıyla kaydedildi!");
+        toast.success("Chart saved successfully!");
       } else {
-        toast("Kaydedildi ama özet alınamadı.", { icon: '⚠️' });
+        toast("Chart saved but summary could not be generated.", { icon: '⚠️' });
       }
     } catch (error) {
-      console.error("Chart kaydederken hata:", error);
-      toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
+      console.error("Error while saving chart:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     }
   };
   
