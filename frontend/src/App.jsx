@@ -48,18 +48,13 @@ function App() {
 
       {/* Sağ taraf: ChartBuilder */}
       <div className="w-full md:w-[60%] bg-white flex flex-col items-end relative p-6 overflow-y-auto">
-        {/* Logo sağ üstte */}
-        <div className="absolute top-4 right-6">
-          <img src="src/assets/Flower.jpeg" alt="Flower Logo" className="w-25 h-25 object-contain" />
-        </div>
-
         {/* ChartBuilder içerik */}
         <div className="w-full flex justify-center items-start">
           <ChartBuilder onSetSummary={setSummaryData} onSetTab={setActiveTab} />
         </div>
       </div>
 
-    </div> // <-- bu kapanış div eksikti
+    </div>
   );
 }
 
