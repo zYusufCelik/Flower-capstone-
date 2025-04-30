@@ -6,7 +6,7 @@ import VideoEmbed from "./VideoEmbed";
 
 const TABS = ["SHAPES", "IMPROVEMENT IDEAS", "SUMMARY", "VIDEO"];
 
-const Tab = ({ summary, activeTab, setActiveTab }) => {
+const Tab = ({ summary, activeTab, setActiveTab, videoId, setVideoId }) => {
   return (
     <div className="h-full max-h-screen overflow-hidden flex flex-col bg-white text-black border border-gray-300 rounded-lg shadow-md">
       {/* Tab Buttons */}
@@ -28,12 +28,22 @@ const Tab = ({ summary, activeTab, setActiveTab }) => {
         ))}
       </div>
 
-      {/* Content */}
       <div className="overflow-y-auto p-4 flex-1">
-        {activeTab === "SHAPES" && <Shapes />}
-        {activeTab === "IMPROVEMENT IDEAS" && <ProposedEnhancements />}
-        {activeTab === "SUMMARY" && summary && <Summary summary={summary} />}
-        {activeTab === "VIDEO" && <VideoEmbed />}
+        <div className={activeTab === "SHAPES" ? "block" : "hidden"}>
+          <Shapes />
+        </div>
+
+        <div className={activeTab === "IMPROVEMENT IDEAS" ? "block" : "hidden"}>
+          <ProposedEnhancements />
+        </div>
+
+        <div className={activeTab === "SUMMARY" ? "block" : "hidden"}>
+          {summary && <Summary summary={summary} />}
+        </div>
+
+        <div className={activeTab === "VIDEO" ? "block" : "hidden"}>
+          <VideoEmbed videoId={videoId} setVideoId={setVideoId} />
+        </div>
       </div>
     </div>
   );

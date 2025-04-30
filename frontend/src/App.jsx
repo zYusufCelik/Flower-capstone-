@@ -1,36 +1,36 @@
 import React, { useState } from "react";
 import ChartBuilder from "./components/chartComponents/ChartBuilder";
 import Tab from "./components/tabComponents/Tab";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [summaryData, setSummaryData] = useState(null);
   const [activeTab, setActiveTab] = useState("SHAPES");
+  const [videoId, setVideoId] = useState(null);
 
   return (
     <div className="flex flex-col md:flex-row w-screen h-screen bg-gray-100">
-      
       <Toaster
         position="top-right"
         toastOptions={{
           success: {
             style: {
-              background: 'green',
-              color: 'white',
+              background: "green",
+              color: "white",
             },
             iconTheme: {
-              primary: 'white',
-              secondary: 'green',
+              primary: "white",
+              secondary: "green",
             },
           },
           error: {
             style: {
-              background: 'red',
-              color: 'white',
+              background: "red",
+              color: "white",
             },
             iconTheme: {
-              primary: 'white',
-              secondary: 'red',
+              primary: "white",
+              secondary: "red",
             },
           },
           duration: 4000,
@@ -43,6 +43,8 @@ function App() {
           summary={summaryData}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          videoId={videoId}
+          setVideoId={setVideoId}
         />
       </div>
 
@@ -53,7 +55,6 @@ function App() {
           <ChartBuilder onSetSummary={setSummaryData} onSetTab={setActiveTab} />
         </div>
       </div>
-
     </div>
   );
 }
