@@ -30,13 +30,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(); 
 }
 
-app.UseCors("AllowAll");
+
 
 app.MapGet("/charts", async (ApplicationDbContext dbContext, IMapper mapper) =>
 {
