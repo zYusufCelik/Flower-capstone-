@@ -1,4 +1,3 @@
-
 import React from "react";
 
 const Shapes = () => {
@@ -7,13 +6,13 @@ const Shapes = () => {
       icon: <div className="w-6 h-6 bg-green-600 rounded-full" />,
       name: "Operation",
       description:
-      "An action. One of the steps in the procedure. Any operation for making, altering or changing. Eg. Drilling a hole, cutting, shaping.",
+        "An action. One of the steps in the procedure. Any operation for making, altering or changing. Eg. Drilling a hole, cutting, shaping.",
     },
     {
       icon: <div className="w-6 h-6 bg-blue-500 rounded" />,
       name: "Inspection",
       description:
-      "Represents checking for quality and quantity of the items. Eg. Weight check, examine printed form for information.",
+        "Represents checking for quality and quantity of the items. Eg. Weight check, examine printed form for information.",
     },
     {
       icon: (
@@ -29,13 +28,13 @@ const Shapes = () => {
     {
       icon: (
         <div className="w-6 h-6 rounded-full overflow-hidden flex">
-          <div className="w-1/2 h-full bg-yellow-400 rounded-l-full" />
-          <div className="w-1/2 h-full bg-white rounded-r-full" />
+          <div className="w-1/2 h-full bg-white rounded-l-full" />
+          <div className="w-1/2 h-full bg-yellow-400 rounded-r-full" />
         </div>
       ),
       name: "Delay",
       description:
-      "Delay means the process has stopped due to some reason. Eg. Waiting for elevator, materials waiting on floor to be processed.",
+        "Delay means the process has stopped due to some reason. Eg. Waiting for elevator, materials waiting on floor to be processed.",
     },
     {
       icon: (
@@ -77,4 +76,3 @@ const Shapes = () => {
 };
 
 export default Shapes;
-

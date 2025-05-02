@@ -1,22 +1,21 @@
-
-import React, { useState } from 'react';
-import ProcessForm from './ProcessForm';
-import { saveChart } from '../../services/chartService';
-import { validateProcesses } from '../../utils/validationHelper';
-import {toast} from 'react-hot-toast'
+import React, { useState } from "react";
+import ProcessForm from "./ProcessForm";
+import { saveChart } from "../../services/chartService";
+import { validateProcesses } from "../../utils/validationHelper";
+import { toast } from "react-hot-toast";
 
 const ChartBuilder = ({ onSetSummary, onSetTab }) => {
-  const [chartName, setChartName] = useState('');
+  const [chartName, setChartName] = useState("");
   const [processes, setProcesses] = useState([]);
 
   const handleAddProcess = () => {
     setProcesses((prev) => [
       ...prev,
       {
-        processName: '',
-        shape: '',
-        time: '',
-        distance: '',
+        processName: "",
+        shape: "",
+        time: "",
+        distance: "",
         valueAdded: false,
         nonValueAdded: false,
       },
@@ -34,51 +33,59 @@ const ChartBuilder = ({ onSetSummary, onSetTab }) => {
   };
 
   const handleSaveChart = async () => {
-    // Check Chart Name
     if (!chartName || chartName.trim() === "") {
       toast.error("Chart name is required.");
       return;
     }
-  
-    // Validate Processes
+
     const validationErrors = validateProcesses(processes);
     if (validationErrors.length > 0) {
       toast.error(validationErrors[0]);
       return;
     }
-  
+
     try {
-      const cleanedProcesses = processes.map(p => ({
+      const cleanedProcesses = processes.map((p) => ({
         ...p,
         time: p.time === "" ? null : Number(p.time),
-        distance: p.distance === "" ? null : Number(p.distance)
+        distance: p.distance === "" ? null : Number(p.distance),
       }));
-  
+
       const chartPayload = {
         name: chartName,
         processes: cleanedProcesses,
       };
-  
+
       const result = await saveChart(chartPayload);
-  
+
       if (result && result.summary) {
         onSetSummary(result.summary);
         onSetTab("SUMMARY");
         toast.success("Chart saved successfully!");
       } else {
-        toast("Chart saved but summary could not be generated.", { icon: '⚠️' });
+        toast("Chart saved but summary could not be generated.", {
+          icon: "⚠️",
+        });
       }
     } catch (error) {
       console.error("Error while saving chart:", error);
       toast.error("An unexpected error occurred. Please try again.");
     }
   };
-  
+
+  const handleRefresh = () => {
+    setChartName("");
+    setProcesses([]);
+    onSetSummary(null);
+  };
+
   return (
     <div className="w-full max-w-[1000px]">
       {/* Chart Name */}
       <div className="mb-6">
-        <label className="block text-md font-medium text-gray-700 mb-1">Chart Name</label>
+        <label className="block text-md font-medium text-gray-700 mb-1">
+          Chart Name
+        </label>
         <input
           className="w-[300px] border border-gray-300 px-3 py-2 rounded bg-white text-gray-800 placeholder-gray-400 text-sm my-3"
           value={chartName}
@@ -113,6 +120,13 @@ const ChartBuilder = ({ onSetSummary, onSetTab }) => {
           className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded text-sm"
         >
           Save Chart
+        </button>
+
+        <button
+          onClick={handleRefresh}
+          className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded text-sm"
+        >
+          Refresh
         </button>
       </div>
     </div>
