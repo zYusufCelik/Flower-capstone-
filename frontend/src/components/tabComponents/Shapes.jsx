@@ -16,10 +16,11 @@ const Shapes = () => {
     },
     {
       icon: (
-        <div className="w-6 h-6 flex items-center justify-center">
-          <div className="w-3 h-[3px] bg-orange-500" />
-          <div className="w-0 h-0 border-t-[4px] border-b-[4px] border-l-[6px] border-t-transparent border-b-transparent border-l-orange-500 ml-[2px]" />
-        </div>
+        <img
+        src="src/assets/transportation.png"
+        alt="Transportation Icon"
+        className="w-10 h-10 object-contain"
+      />
       ),
       name: "Transportation",
       description:
@@ -27,10 +28,11 @@ const Shapes = () => {
     },
     {
       icon: (
-        <div className="w-6 h-6 rounded-full overflow-hidden flex">
-          <div className="w-1/2 h-full bg-white rounded-l-full" />
-          <div className="w-1/2 h-full bg-yellow-400 rounded-r-full" />
-        </div>
+        <img
+      src="src/assets/delay.png"
+      alt="Delay Icon"
+      className="w-10 h-10 object-contain"
+    />
       ),
       name: "Delay",
       description:
@@ -38,9 +40,11 @@ const Shapes = () => {
     },
     {
       icon: (
-        <div className="w-6 h-6 flex items-center justify-center">
-          <div className="w-0 h-0 border-l-[8px] border-r-[8px] border-t-[10px] border-l-transparent border-r-transparent border-t-purple-600" />
-        </div>
+        <img
+      src="src/assets/storage.png"
+      alt="Storage Icon"
+      className="w-max h-max object-contain"
+    />
       ),
       name: "Storage",
       description:
@@ -60,13 +64,13 @@ const Shapes = () => {
             <div className="w-8 h-8 flex items-center justify-center flex-shrink-0">
               {shape.icon}
             </div>
-            <div className="border border-gray-400 px-3 py-1 rounded text-sm font-medium text-center w-full break-words">
+            <div className="border border-gray-400 px-3 py-1 rounded text-xs font-medium text-center w-full break-words">
               {shape.name}
             </div>
           </div>
 
           {/* Alt: açıklama */}
-          <div className="w-full lg:flex-1 border border-gray-300 p-3 rounded text-sm text-center lg:text-left break-words">
+          <div className="w-full lg:flex-1 border border-gray-300 p-3 rounded text-xs text-center lg:text-left break-words">
             {shape.description}
           </div>
         </div>

@@ -1,127 +1,230 @@
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
-import { Document, Packer, Paragraph, TextRun } from "docx";
+import { Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel, Table, TableRow, TableCell, WidthType } from "docx";
 import { saveAs } from "file-saver";
+import {
+  delayIconBase64,
+  operationIconBase64,
+  transportationIconBase64,
+  inspectionIconBase64,
+  storageIconBase64,
+} from "../../constants/iconBase64"
+
 
 const Summary = ({ summary }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // 🟢 PDF OLUŞTURMA
-  const handleDownloadPDF = () => {
-    if (!summary) {
-      alert("Summary is missing!");
-      return;
+  //PDF OLUŞTURMA
+const handleDownloadPDF = () => {
+  if (!summary) {
+    alert("Summary is missing!");
+    return;
+  }
+
+  const doc = new jsPDF();
+
+  // Başlık
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.text("Summary Report", 10, 20);
+
+  // Process Name
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Process Name: ${summary.processName || "N/A"}`, 10, 30);
+
+  // General Info + Shape Breakdown
+  doc.text("General Information:", 10, 40);
+  doc.line(10, 42, 200, 42);
+
+  let infoY = 50;
+
+  doc.text(`Total Time: ${summary.totalTime} min`, 10, infoY);
+  doc.text(`Total Distance: ${summary.totalDistance} m`, 10, infoY + 10);
+  doc.text(
+    `Value Added: ${summary.valueAddedCount} (${summary.valueAddedPercentage}%)`,
+    10,
+    infoY + 20
+  );
+  doc.text(
+    `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`,
+    10,
+    infoY + 30
+  );
+
+  // Shapes Summary
+  summary.shapes.forEach((shape, index) => {
+    doc.text(
+      `${shape.name} (${shape.shape}): ${shape.count} step(s) - ${shape.percentage}%`,
+      10,
+      infoY + 40 + index * 10
+    );
+  });
+
+  // Steps of the Process (Tablo Formatı)
+  const stepsStartY = infoY + 50 + summary.shapes.length * 10;
+  doc.text("Steps of the Process:", 10, stepsStartY);
+  doc.line(10, stepsStartY + 2, 200, stepsStartY + 2);
+
+  let tableY = stepsStartY + 10;
+
+  // Tablo Başlıkları
+  doc.setFont("helvetica", "bold");
+  doc.text("Step Name", 10, tableY);
+  doc.text("Shape", 60, tableY);
+  doc.text("Duration/Distance", 120, tableY);
+  doc.text("Value Type", 200, tableY, { align: "right" });
+  doc.line(10, tableY + 2, 200, tableY + 2);
+  doc.setFont("helvetica", "normal");
+
+  // Satırlar
+  summary.steps.forEach((step, index) => {
+    const { stepName, shape, distance, time, valueType } = step;
+
+    const shapeNameMap = {
+      circle: "Operation",
+      square: "Inspection",
+      arrow: "Transportation",
+      triangle: "Storage",
+      D: "Delay",
+      half: "Delay"
+    };
+
+    const shapeLabel = `${shapeNameMap[shape] || "Unknown"}${shape ? ` (${shape})` : ""}`;
+    const durationOrDistance = distance != null ? `${distance} m` : `${time} sec`;
+
+    const rowY = tableY + 10 + index * 8;
+    doc.text(stepName, 10, rowY);
+
+    // Şekil ikonları
+    if (shape === "D" || shape === "half") {
+      doc.addImage(delayIconBase64, "PNG", 60, rowY - 4, 8, 8);
+    } else if (shape === "circle") {
+      doc.addImage(operationIconBase64, "PNG", 60, rowY - 4, 8, 8);
+    } else if (shape === "arrow") {
+      doc.addImage(transportationIconBase64, "PNG", 60, rowY - 4, 8, 8);
+    } else if (shape === "square") {
+      doc.addImage(inspectionIconBase64, "PNG", 60, rowY - 4, 8, 8);
+    } else if (shape === "triangle") {
+      doc.addImage(storageIconBase64, "PNG", 60, rowY - 4, 8, 8);
+    } else {
+      doc.text(shapeLabel, 60, rowY);
     }
 
-    const doc = new jsPDF();
+    doc.text(durationOrDistance, 120, rowY);
+    doc.text(valueType, 200, rowY, { align: "right" });
+  });
 
-    // Başlık
-    doc.setFontSize(18);
-    doc.setFont("helvetica", "bold");
-    doc.text("Summary Report", 10, 20);
+  doc.save("summary.pdf");
+  setIsModalOpen(false);
+};
 
-    // General Info
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "normal");
-    doc.text("General Information:", 10, 35);
-    doc.line(10, 37, 200, 37);
 
-    doc.text(`Total Time: ${summary.totalTime} min`, 10, 45);
-    doc.text(`Total Distance: ${summary.totalDistance} m`, 10, 55);
-    doc.text(
-      `Value Added: ${summary.valueAddedCount} (${summary.valueAddedPercentage}%)`,
-      10,
-      65
-    );
-    doc.text(
-      `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`,
-      10,
-      75
-    );
+  // DOCX OLUŞTURMA
+// DOCX OLUŞTURMA
+const handleDownloadDOCX = () => {
+  if (!summary) {
+    alert("Summary is missing!");
+    return;
+  }
 
-    // Shapes Summary
-    doc.text("Shapes Summary:", 10, 90);
-    doc.line(10, 92, 200, 92);
-
-    summary.shapes.forEach((shape, index) => {
-      doc.text(
-        `• ${shape.name} (${shape.shape}): ${shape.count} step(s) - ${shape.percentage}%`,
-        15,
-        100 + index * 10
-      );
-    });
-
-    doc.save("summary.pdf");
-    setIsModalOpen(false);
+  const shapeNameMap = {
+    circle: "Operation",
+    square: "Inspection",
+    arrow: "Transportation",
+    triangle: "Storage",
+    D: "Delay",
+    half: "Delay",
   };
 
-  // 🟣 DOCX OLUŞTURMA
-  const handleDownloadDOCX = () => {
-    if (!summary) {
-      alert("Summary is missing!");
-      return;
-    }
+  const doc = new Document({
+    sections: [
+      {
+        children: [
+          // Başlık
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Summary Report",
+                bold: true,
+                size: 32,
+              }),
+            ],
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 300 },
+          }),
 
-    const doc = new Document({
-      sections: [
-        {
-          children: [
-            // Başlık
+          // Process Name
+          new Paragraph({ text: `Process Name: ${summary.processName || "N/A"}` }),
+
+          // Boşluk
+          new Paragraph({ text: "" }),
+
+          // General Information
+          new Paragraph({ text: "General Information:", heading: HeadingLevel.HEADING_2 }),
+          new Paragraph(`Total Time: ${summary.totalTime} min`),
+          new Paragraph(`Total Distance: ${summary.totalDistance} m`),
+          new Paragraph(
+            `Value Added: ${summary.valueAddedCount} (${summary.valueAddedPercentage}%)`
+          ),
+          new Paragraph(
+            `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`
+          ),
+
+          // Shapes Inline
+          ...summary.shapes.map((shape) =>
             new Paragraph({
               children: [
-                new TextRun({
-                  text: "Summary Report",
-                  bold: true,
-                  size: 32, // 16pt
-                }),
+                new TextRun(
+                  `${shape.name} (${shape.shape}): ${shape.count} step(s) - ${shape.percentage}%`
+                ),
               ],
-              alignment: "center",
-              spacing: { after: 300 },
-            }),
+            })
+          ),
 
-            // General Information
-            new Paragraph({
-              text: "General Information:",
-              heading: "Heading2",
-            }),
-            new Paragraph(`Total Time: ${summary.totalTime} min`),
-            new Paragraph(`Total Distance: ${summary.totalDistance} m`),
-            new Paragraph(
-              `Value Added: ${summary.valueAddedCount} (${summary.valueAddedPercentage}%)`
-            ),
-            new Paragraph(
-              `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`
-            ),
+          // Boşluk
+          new Paragraph({ text: "" }),
 
-            // Shapes Summary
-            new Paragraph({
-              text: "Shapes Summary:",
-              heading: "Heading2",
-              spacing: { before: 300 },
-            }),
+          // Steps of the Process
+          new Paragraph({ text: "Steps of the Process:", heading: HeadingLevel.HEADING_2 }),
 
-            // Shapes Bullet List
-            ...summary.shapes.map(
-              (shape) =>
-                new Paragraph({
+          // Boşluk
+          new Paragraph({ text: "" }),
+
+          new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+              new TableRow({
+                tableHeader: true,
+                children: ["Step Name", "Shape", "Duration/Distance", "Value Type"].map(
+                  (text) => new TableCell({ children: [new Paragraph({ text, bold: true })] })
+                ),
+              }),
+              ...summary.steps.map((step) => {
+                const shapeLabel = `${shapeNameMap[step.shape] || "Unknown"} (${step.shape})`;
+                const duration = step.distance != null ? `${step.distance} m` : `${step.time} sec`;
+
+                return new TableRow({
                   children: [
-                    new TextRun({
-                      text: `${shape.name} (${shape.shape}): ${shape.count} step(s) - ${shape.percentage}%`,
-                    }),
+                    new TableCell({ children: [new Paragraph(step.stepName)] }),
+                    new TableCell({ children: [new Paragraph(shapeLabel)] }),
+                    new TableCell({ children: [new Paragraph(duration)] }),
+                    new TableCell({ children: [new Paragraph(step.valueType)] }),
                   ],
-                  bullet: { level: 0 },
-                })
-            ),
-          ],
-        },
-      ],
-    });
+                });
+              }),
+            ],
+          }),
+        ],
+      },
+    ],
+  });
 
-    Packer.toBlob(doc).then((blob) => {
-      saveAs(blob, "summary.docx");
-      setIsModalOpen(false);
-    });
-  };
+  Packer.toBlob(doc).then((blob) => {
+    saveAs(blob, "summary.docx");
+    setIsModalOpen(false);
+  });
+};
 
   return (
     <div className="space-y-6 w-full max-w-xl relative">
