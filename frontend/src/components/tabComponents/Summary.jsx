@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
-import { Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel, Table, TableRow, TableCell, WidthType } from "docx";
+import { Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel, Table, TableRow, TableCell, WidthType, Border} from "docx";
 import { saveAs } from "file-saver";
 import {
   delayIconBase64,
@@ -121,110 +121,145 @@ const handleDownloadPDF = () => {
 
 
   // DOCX OLUŞTURMA
-// DOCX OLUŞTURMA
-const handleDownloadDOCX = () => {
-  if (!summary) {
-    alert("Summary is missing!");
-    return;
-  }
-
-  const shapeNameMap = {
-    circle: "Operation",
-    square: "Inspection",
-    arrow: "Transportation",
-    triangle: "Storage",
-    D: "Delay",
-    half: "Delay",
-  };
-
-  const doc = new Document({
-    sections: [
-      {
-        children: [
-          // Başlık
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: "Summary Report",
-                bold: true,
-                size: 32,
-              }),
-            ],
-            alignment: AlignmentType.CENTER,
-            spacing: { after: 300 },
-          }),
-
-          // Process Name
-          new Paragraph({ text: `Process Name: ${summary.processName || "N/A"}` }),
-
-          // Boşluk
-          new Paragraph({ text: "" }),
-
-          // General Information
-          new Paragraph({ text: "General Information:", heading: HeadingLevel.HEADING_2 }),
-          new Paragraph(`Total Time: ${summary.totalTime} min`),
-          new Paragraph(`Total Distance: ${summary.totalDistance} m`),
-          new Paragraph(
-            `Value Added: ${summary.valueAddedCount} (${summary.valueAddedPercentage}%)`
-          ),
-          new Paragraph(
-            `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`
-          ),
-
-          // Shapes Inline
-          ...summary.shapes.map((shape) =>
+  const handleDownloadDOCX = () => {
+    if (!summary) {
+      alert("Summary is missing!");
+      return;
+    }
+  
+    const shapeNameMap = {
+      circle: "Operation",
+      square: "Inspection",
+      arrow: "Transportation",
+      triangle: "Storage",
+      D: "Delay",
+      half: "Delay",
+    };
+  
+    const doc = new Document({
+      sections: [
+        {
+          children: [
+            // Title
             new Paragraph({
               children: [
-                new TextRun(
+                new TextRun({
+                  text: "Summary Report",
+                  bold: true,
+                  size: 32,
+                }),
+              ],
+              alignment: "center",
+              spacing: { after: 300 },
+            }),
+  
+            // Process Name
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `Process Name: ${summary.processName || "N/A"}`,
+                  bold: true,
+                }),
+              ],
+              spacing: { after: 200 },
+            }),
+  
+            // General Information
+            new Paragraph({
+              text: "General Information:",
+              bold: true,
+              spacing: { after: 100 },
+            }),
+            new Paragraph(`Total Time: ${summary.totalTime} min`),
+            new Paragraph(`Total Distance: ${summary.totalDistance} m`),
+            new Paragraph(
+              `Value Added: ${summary.valueAddedCount} (${summary.valueAddedPercentage}%)`
+            ),
+            new Paragraph(
+              `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`
+            ),
+  
+            // Shapes Summary (General Info içindeymiş gibi)
+            ...summary.shapes.map(
+              (shape) =>
+                new Paragraph(
                   `${shape.name} (${shape.shape}): ${shape.count} step(s) - ${shape.percentage}%`
+                )
+            ),
+  
+            new Paragraph({ text: "", spacing: { before: 300, after: 100 } }),
+  
+            // Steps of the Process
+            new Paragraph({
+              text: "Steps of the Process:",
+              bold: true,
+              spacing: { after: 200 },
+            }),
+  
+            // Table
+            new Table({
+              width: { size: 100, type: WidthType.PERCENTAGE },
+              rows: [
+                // Header Row
+                new TableRow({
+                  children: [
+                    new TableCell({
+                      children: [new Paragraph({ text: "Step Name", bold: true })],
+                    }),
+                    new TableCell({
+                      children: [new Paragraph({ text: "Shape", bold: true })],
+                    }),
+                    new TableCell({
+                      children: [new Paragraph({ text: "Duration/Distance", bold: true })],
+                    }),
+                    new TableCell({
+                      children: [new Paragraph({ text: "Value Type", bold: true })],
+                    }),
+                  ],
+                }),
+  
+                // Data Rows
+                ...summary.steps.map(
+                  (step) =>
+                    new TableRow({
+                      children: [
+                        new TableCell({
+                          children: [new Paragraph(step.stepName)],
+                        }),
+                        new TableCell({
+                          children: [
+                            new Paragraph(
+                              `${shapeNameMap[step.shape] || "Unknown"} (${step.shape})`
+                            ),
+                          ],
+                        }),
+                        new TableCell({
+                          children: [
+                            new Paragraph(
+                              step.distance != null
+                                ? `${step.distance} m`
+                                : `${step.time} sec`
+                            ),
+                          ],
+                        }),
+                        new TableCell({
+                          children: [new Paragraph(step.valueType)],
+                        }),
+                      ],
+                    })
                 ),
               ],
-            })
-          ),
-
-          // Boşluk
-          new Paragraph({ text: "" }),
-
-          // Steps of the Process
-          new Paragraph({ text: "Steps of the Process:", heading: HeadingLevel.HEADING_2 }),
-
-          // Boşluk
-          new Paragraph({ text: "" }),
-
-          new Table({
-            width: { size: 100, type: WidthType.PERCENTAGE },
-            rows: [
-              new TableRow({
-                tableHeader: true,
-                children: ["Step Name", "Shape", "Duration/Distance", "Value Type"].map(
-                  (text) => new TableCell({ children: [new Paragraph({ text, bold: true })] })
-                ),
-              }),
-              ...summary.steps.map((step) => {
-                const shapeLabel = `${shapeNameMap[step.shape] || "Unknown"} (${step.shape})`;
-                const duration = step.distance != null ? `${step.distance} m` : `${step.time} sec`;
-
-                return new TableRow({
-                  children: [
-                    new TableCell({ children: [new Paragraph(step.stepName)] }),
-                    new TableCell({ children: [new Paragraph(shapeLabel)] }),
-                    new TableCell({ children: [new Paragraph(duration)] }),
-                    new TableCell({ children: [new Paragraph(step.valueType)] }),
-                  ],
-                });
-              }),
-            ],
-          }),
-        ],
-      },
-    ],
-  });
-
-  Packer.toBlob(doc).then((blob) => {
-    saveAs(blob, "summary.docx");
-    setIsModalOpen(false);
-  });
-};
+            }),
+          ],
+        },
+      ],
+    });
+  
+    Packer.toBlob(doc).then((blob) => {
+      saveAs(blob, "summary.docx");
+      setIsModalOpen(false);
+    });
+  };
 
   return (
     <div className="space-y-6 w-full max-w-xl relative">
