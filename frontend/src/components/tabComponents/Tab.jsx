@@ -4,7 +4,7 @@ import ProposedEnhancements from "./ProposedEnhancements";
 import Summary from "./Summary";
 import VideoEmbed from "./VideoEmbed";
 
-const TABS = ["SHAPES", "IMPROVEMENT IDEAS", "SUMMARY", "VIDEO"];
+const TABS = ["SHAPES", "VIDEO" , "SUMMARY","IMPROVEMENT GUIDE"];
 
 const Tab = ({ summary, activeTab, setActiveTab, videoId, setVideoId }) => {
   return (
@@ -33,17 +33,21 @@ const Tab = ({ summary, activeTab, setActiveTab, videoId, setVideoId }) => {
           <Shapes />
         </div>
 
-        <div className={activeTab === "IMPROVEMENT IDEAS" ? "block" : "hidden"}>
-          <ProposedEnhancements />
+        <div className={activeTab === "VIDEO" ? "block" : "hidden"}>
+          <VideoEmbed videoId={videoId} setVideoId={setVideoId} />
         </div>
 
         <div className={activeTab === "SUMMARY" ? "block" : "hidden"}>
           {summary && <Summary summary={summary} />}
         </div>
 
-        <div className={activeTab === "VIDEO" ? "block" : "hidden"}>
-          <VideoEmbed videoId={videoId} setVideoId={setVideoId} />
+        <div className={activeTab === "IMPROVEMENT GUIDE" ? "block" : "hidden"}>
+          <ProposedEnhancements />
         </div>
+
+        
+
+        
       </div>
     </div>
   );

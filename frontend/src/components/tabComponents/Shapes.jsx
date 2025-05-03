@@ -6,7 +6,7 @@ const Shapes = () => {
       icon: <div className="w-6 h-6 bg-green-600 rounded-full" />,
       name: "Operation",
       description:
-        "An action. One of the steps in the procedure. Any operation for making, altering or changing. Eg. Drilling a hole, cutting, shaping.",
+        "A step in the process where a specific task is performed that changes the form, fit, function, or condition of a product. It adds value to the product. Eg. Drilling, cutting, shaping.",
     },
     {
       icon: <div className="w-6 h-6 bg-blue-500 rounded" />,
@@ -23,7 +23,7 @@ const Shapes = () => {
       ),
       name: "Transportation",
       description:
-        "Movement of workers or materials, e.g., by truck or conveyor.",
+        "Movement of workers or materials, e.g., by hand, or truck.",
     },
     {
       icon: (

@@ -11,7 +11,7 @@ const ChartBuilder = ({ onSetSummary, onSetTab }) => {
   const handleAddProcess = () => {
     setProcesses((prev) => [
       ...prev,
-      {
+      { 
         processName: "",
         shape: "",
         time: "",
@@ -84,13 +84,13 @@ const ChartBuilder = ({ onSetSummary, onSetTab }) => {
       {/* Chart Name */}
       <div className="mb-6">
         <label className="block text-md font-medium text-gray-700 mb-1">
-          Chart Name
+          Process Name
         </label>
         <input
           className="w-[300px] border border-gray-300 px-3 py-2 rounded bg-white text-gray-800 placeholder-gray-400 text-sm my-3"
           value={chartName}
           onChange={(e) => setChartName(e.target.value)}
-          placeholder="Enter chart name"
+          placeholder="Enter process name"
         />
       </div>
 
@@ -112,14 +112,14 @@ const ChartBuilder = ({ onSetSummary, onSetTab }) => {
           onClick={handleAddProcess}
           className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded border border-blue-300 text-sm"
         >
-          + New Process
+          + New Step
         </button>
 
         <button
           onClick={handleSaveChart}
           className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded text-sm"
         >
-          Save Chart
+          Save and Analyze
         </button>
 
         <button

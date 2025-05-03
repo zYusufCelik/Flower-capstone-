@@ -29,11 +29,11 @@ const ProcessForm = ({ data, onChange, onDelete }) => {
           {/* Process */}
           <div className="flex flex-col items-center justify-between w-full h-[75px]">
             <label className="text-gray-700 text-center h-[20px] flex items-end justify-center">
-              Process
+              Step
             </label>
             <textarea
               className="border px-2 py-1 rounded resize-none h-[40px] w-full text-xs text-gray-900 bg-white placeholder-gray-400 text-center"
-              placeholder="Process Name"
+              placeholder="Step Name"
               value={data.processName}
               onChange={(e) => updateField("processName", e.target.value)}
             />
@@ -75,7 +75,7 @@ const ProcessForm = ({ data, onChange, onDelete }) => {
             <input
               type="number"
               className="border px-2 py-1 rounded w-[60px] h-[40px] text-xs text-gray-900 bg-white placeholder-gray-400 text-center"
-              placeholder="min"
+              placeholder="sec"
               value={data.time}
               onChange={(e) => updateField("time", e.target.value)}
               disabled={data.shape === "arrow"}
