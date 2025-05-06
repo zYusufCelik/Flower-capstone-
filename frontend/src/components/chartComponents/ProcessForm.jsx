@@ -1,57 +1,57 @@
 import React from "react";
 
 const shapeOptions = [
-  { value: "circle", 
-  label: (
-    <img
-    src="src/assets/operation.png" 
-    alt="Operation"
-    className="w-4 h-3"
-  />
-  ), 
-  colorClass: "border-2 border-green-500" },
+  {
+    value: "circle",
+    label: (
+      <img src="src/assets/operation.png" alt="Operation" className="w-4 h-3" />
+    ),
+    colorClass: "border-2 border-green-500",
+  },
 
-  { value: "arrow", 
-  label: (
-    <img
-    src="src/assets/transportation.png" 
-    alt="Delay"
-    className="w-4 h-4"
-  />
-  ), 
-  colorClass:"border-2 border-red-500" },
-
-  { value: "square", 
-  label: (
-    <img
-      src="src/assets/inspection.png" 
-      alt="Inspection"
-      className="w-4 h-4"
-    />
-  ),
-  colorClass: "border-2 border-blue-300", 
-},
-
-  {value: "D",
+  {
+    value: "arrow",
     label: (
       <img
-        src="src/assets/delay.png" 
+        src="src/assets/transportation.png"
+        alt="Delay"
+        className="w-4 h-4"
+      />
+    ),
+    colorClass: "border-2 border-red-500",
+  },
+
+  {
+    value: "square",
+    label: (
+      <img
+        src="src/assets/inspection.png"
+        alt="Inspection"
+        className="w-4 h-4"
+      />
+    ),
+    colorClass: "border-2 border-blue-300",
+  },
+
+  {
+    value: "D",
+    label: (
+      <img
+        src="src/assets/delay.png"
         alt="Transportation"
         className="w-4 h-4"
       />
     ),
-    colorClass: "border-2 border-yellow-300", 
+    colorClass: "border-2 border-yellow-300",
   },
 
-  { value: "triangle", 
-  label: (
-    <img
-    src="src/assets/storage.png" 
-    alt="Storage"
-    className="w-4 h-4" 
-  />
-),
-   colorClass: "border-2 border-purple-500" },
+  {
+    value: "triangle",
+    label: (
+      <img src="src/assets/storage.png" alt="Storage" className="w-4 h-4" />
+    ),
+    colorClass: "border-2 border-purple-500",
+  },
 ];
 
 const ProcessForm = ({ data, onChange, onDelete }) => {
@@ -114,35 +114,34 @@ const ProcessForm = ({ data, onChange, onDelete }) => {
           </div>
 
           {/* Time */}
-<div className="flex flex-col items-center justify-between w-full h-[75px]">
-  <label className="text-gray-700 text-center h-[20px] flex items-end justify-center">
-    Time
-  </label>
-  <input
-    type="number"
-    className="border px-2 py-1 rounded w-[60px] h-[40px] text-xs text-gray-900 bg-white placeholder-gray-400 text-center"
-    placeholder={data.shape === "arrow" ? "X" : "sec"}
-    value={data.time}
-    onChange={(e) => updateField("time", e.target.value)}
-    disabled={data.shape === "arrow"}
-  />
-</div>
+          <div className="flex flex-col items-center justify-between w-full h-[75px]">
+            <label className="text-gray-700 text-center h-[20px] flex items-end justify-center">
+              Time
+            </label>
+            <input
+              type="number"
+              className="border px-2 py-1 rounded w-[60px] h-[40px] text-xs text-gray-900 bg-white placeholder-gray-400 text-center"
+              placeholder={data.shape === "arrow" ? "X" : "sec"}
+              value={data.time}
+              onChange={(e) => updateField("time", e.target.value)}
+              disabled={data.shape === "arrow"}
+            />
+          </div>
 
-{/* Distance */}
-<div className="flex flex-col items-center justify-between w-full h-[75px]">
-  <label className="text-gray-700 text-center h-[20px] flex items-end justify-center">
-    Distance
-  </label>
-  <input
-    type="number"
-    className="border px-2 py-1 rounded w-[60px] h-[40px] text-xs text-gray-900 bg-white placeholder-gray-400 text-center"
-    placeholder={data.shape !== "arrow" ? "X" : "m"}
-    value={data.distance}
-    onChange={(e) => updateField("distance", e.target.value)}
-    disabled={data.shape !== "arrow"}
-  />
-</div>
-
+          {/* Distance */}
+          <div className="flex flex-col items-center justify-between w-full h-[75px]">
+            <label className="text-gray-700 text-center h-[20px] flex items-end justify-center">
+              Distance
+            </label>
+            <input
+              type="number"
+              className="border px-2 py-1 rounded w-[60px] h-[40px] text-xs text-gray-900 bg-white placeholder-gray-400 text-center"
+              placeholder={data.shape !== "arrow" ? "X" : "m"}
+              value={data.distance}
+              onChange={(e) => updateField("distance", e.target.value)}
+              disabled={data.shape !== "arrow"}
+            />
+          </div>
 
           {/* Value Added */}
           <div className="flex flex-col items-center justify-between w-full h-[75px]">

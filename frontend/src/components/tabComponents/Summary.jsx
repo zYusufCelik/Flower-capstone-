@@ -1,6 +1,18 @@
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
-import { Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel, Table, TableRow, TableCell, WidthType, Border} from "docx";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  AlignmentType,
+  HeadingLevel,
+  Table,
+  TableRow,
+  TableCell,
+  WidthType,
+  Border,
+} from "docx";
 import { saveAs } from "file-saver";
 import {
   delayIconBase64,
@@ -8,117 +20,115 @@ import {
   transportationIconBase64,
   inspectionIconBase64,
   storageIconBase64,
-} from "../../constants/iconBase64"
-
+} from "../../constants/iconBase64";
 
 const Summary = ({ summary }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   //PDF OLUŞTURMA
-const handleDownloadPDF = () => {
-  if (!summary) {
-    alert("Summary is missing!");
-    return;
-  }
-
-  const doc = new jsPDF();
-
-  // Başlık
-  doc.setFontSize(18);
-  doc.setFont("helvetica", "bold");
-  doc.text("Summary Report", 10, 20);
-
-  // Process Name
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "normal");
-  doc.text(`Process Name: ${summary.processName || "N/A"}`, 10, 30);
-
-  // General Info + Shape Breakdown
-  doc.text("General Information:", 10, 40);
-  doc.line(10, 42, 200, 42);
-
-  let infoY = 50;
-
-  doc.text(`Total Time: ${summary.totalTime} min`, 10, infoY);
-  doc.text(`Total Distance: ${summary.totalDistance} m`, 10, infoY + 10);
-  doc.text(
-    `Value Added: ${summary.valueAddedCount} (${summary.valueAddedPercentage}%)`,
-    10,
-    infoY + 20
-  );
-  doc.text(
-    `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`,
-    10,
-    infoY + 30
-  );
-
-  // Shapes Summary
-  summary.shapes.forEach((shape, index) => {
-    doc.text(
-      `${shape.name} (${shape.shape}): ${shape.count} step(s) - ${shape.percentage}%`,
-      10,
-      infoY + 40 + index * 10
-    );
-  });
-
-  // Steps of the Process (Tablo Formatı)
-  const stepsStartY = infoY + 50 + summary.shapes.length * 10;
-  doc.text("Steps of the Process:", 10, stepsStartY);
-  doc.line(10, stepsStartY + 2, 200, stepsStartY + 2);
-
-  let tableY = stepsStartY + 10;
-
-  // Tablo Başlıkları
-  doc.setFont("helvetica", "bold");
-  doc.text("Step Name", 10, tableY);
-  doc.text("Shape", 60, tableY);
-  doc.text("Duration/Distance", 120, tableY);
-  doc.text("Value Type", 200, tableY, { align: "right" });
-  doc.line(10, tableY + 2, 200, tableY + 2);
-  doc.setFont("helvetica", "normal");
-
-  // Satırlar
-  summary.steps.forEach((step, index) => {
-    const { stepName, shape, distance, time, valueType } = step;
-
-    const shapeNameMap = {
-      circle: "Operation",
-      square: "Inspection",
-      arrow: "Transportation",
-      triangle: "Storage",
-      D: "Delay",
-      half: "Delay"
-    };
-
-    const shapeLabel = `${shapeNameMap[shape] || "Unknown"}${shape ? ` (${shape})` : ""}`;
-    const durationOrDistance = distance != null ? `${distance} m` : `${time} sec`;
-
-    const rowY = tableY + 10 + index * 8;
-    doc.text(stepName, 10, rowY);
-
-    // Şekil ikonları
-    if (shape === "D" || shape === "half") {
-      doc.addImage(delayIconBase64, "PNG", 60, rowY - 4, 8, 8);
-    } else if (shape === "circle") {
-      doc.addImage(operationIconBase64, "PNG", 60, rowY - 4, 8, 8);
-    } else if (shape === "arrow") {
-      doc.addImage(transportationIconBase64, "PNG", 60, rowY - 4, 8, 8);
-    } else if (shape === "square") {
-      doc.addImage(inspectionIconBase64, "PNG", 60, rowY - 4, 8, 8);
-    } else if (shape === "triangle") {
-      doc.addImage(storageIconBase64, "PNG", 60, rowY - 4, 8, 8);
-    } else {
-      doc.text(shapeLabel, 60, rowY);
+  const handleDownloadPDF = () => {
+    if (!summary) {
+      alert("Summary is missing!");
+      return;
     }
 
-    doc.text(durationOrDistance, 120, rowY);
-    doc.text(valueType, 200, rowY, { align: "right" });
-  });
+    const doc = new jsPDF();
 
-  doc.save("summary.pdf");
-  setIsModalOpen(false);
-};
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("Summary Report", 10, 20);
 
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Process Name: ${summary.processName || "N/A"}`, 10, 30);
+
+    doc.text("General Information:", 10, 40);
+    doc.line(10, 42, 200, 42);
+
+    let infoY = 50;
+
+    doc.text(`Total Time: ${summary.totalTime} min`, 10, infoY);
+    doc.text(`Total Distance: ${summary.totalDistance} m`, 10, infoY + 10);
+    doc.text(
+      `Value Added: ${summary.valueAddedCount} (${summary.valueAddedPercentage}%)`,
+      10,
+      infoY + 20
+    );
+    doc.text(
+      `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`,
+      10,
+      infoY + 30
+    );
+
+    summary.shapes.forEach((shape, index) => {
+      doc.text(
+        `${shape.name} (${shape.shape}): ${shape.count} step(s) - ${shape.percentage}%`,
+        10,
+        infoY + 40 + index * 10
+      );
+    });
+
+    const stepsStartY = infoY + 50 + summary.shapes.length * 10;
+    doc.text("Steps of the Process:", 10, stepsStartY);
+    doc.line(10, stepsStartY + 2, 200, stepsStartY + 2);
+
+    let rowY = stepsStartY + 10;
+    doc.setFont("helvetica", "bold");
+    doc.text("Step Name", 10, rowY);
+    doc.text("Shape", 60, rowY);
+    doc.text("Duration/Distance", 120, rowY);
+    doc.text("Value Type", 200, rowY, { align: "right" });
+    doc.line(10, rowY + 2, 200, rowY + 2);
+    doc.setFont("helvetica", "normal");
+
+    rowY += 8;
+
+    summary.steps.forEach((step) => {
+      const { stepName, shape, distance, time, valueType } = step;
+
+      const shapeNameMap = {
+        circle: "Operation",
+        square: "Inspection",
+        arrow: "Transportation",
+        triangle: "Storage",
+        D: "Delay",
+        half: "Delay",
+      };
+
+      const shapeLabel = `${shapeNameMap[shape] || "Unknown"}${
+        shape ? ` (${shape})` : ""
+      }`;
+      const durationOrDistance =
+        distance != null ? `${distance} m` : `${time} sec`;
+
+      const wrappedName = doc.splitTextToSize(step.stepName, 45);
+      doc.text(wrappedName, 10, rowY);
+
+      const iconY = rowY - 4;
+
+      if (shape === "D" || shape === "half") {
+        doc.addImage(delayIconBase64, "PNG", 60, iconY, 8, 8);
+      } else if (shape === "circle") {
+        doc.addImage(operationIconBase64, "PNG", 60, iconY, 8, 8);
+      } else if (shape === "arrow") {
+        doc.addImage(transportationIconBase64, "PNG", 60, iconY, 8, 8);
+      } else if (shape === "square") {
+        doc.addImage(inspectionIconBase64, "PNG", 60, iconY, 8, 8);
+      } else if (shape === "triangle") {
+        doc.addImage(storageIconBase64, "PNG", 60, iconY, 8, 8);
+      } else {
+        doc.text(shapeLabel, 60, rowY);
+      }
+
+      doc.text(durationOrDistance, 120, rowY);
+      doc.text(valueType, 200, rowY, { align: "right" });
+
+      rowY += wrappedName.length * 7;
+    });
+
+    doc.save("summary.pdf");
+    setIsModalOpen(false);
+  };
 
   // DOCX OLUŞTURMA
   const handleDownloadDOCX = () => {
@@ -126,7 +136,7 @@ const handleDownloadPDF = () => {
       alert("Summary is missing!");
       return;
     }
-  
+
     const shapeNameMap = {
       circle: "Operation",
       square: "Inspection",
@@ -135,7 +145,7 @@ const handleDownloadPDF = () => {
       D: "Delay",
       half: "Delay",
     };
-  
+
     const doc = new Document({
       sections: [
         {
@@ -152,7 +162,7 @@ const handleDownloadPDF = () => {
               alignment: "center",
               spacing: { after: 300 },
             }),
-  
+
             // Process Name
             new Paragraph({
               children: [
@@ -163,7 +173,7 @@ const handleDownloadPDF = () => {
               ],
               spacing: { after: 200 },
             }),
-  
+
             // General Information
             new Paragraph({
               text: "General Information:",
@@ -178,7 +188,7 @@ const handleDownloadPDF = () => {
             new Paragraph(
               `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`
             ),
-  
+
             // Shapes Summary (General Info içindeymiş gibi)
             ...summary.shapes.map(
               (shape) =>
@@ -186,16 +196,16 @@ const handleDownloadPDF = () => {
                   `${shape.name} (${shape.shape}): ${shape.count} step(s) - ${shape.percentage}%`
                 )
             ),
-  
+
             new Paragraph({ text: "", spacing: { before: 300, after: 100 } }),
-  
+
             // Steps of the Process
             new Paragraph({
               text: "Steps of the Process:",
               bold: true,
               spacing: { after: 200 },
             }),
-  
+
             // Table
             new Table({
               width: { size: 100, type: WidthType.PERCENTAGE },
@@ -204,20 +214,29 @@ const handleDownloadPDF = () => {
                 new TableRow({
                   children: [
                     new TableCell({
-                      children: [new Paragraph({ text: "Step Name", bold: true })],
+                      children: [
+                        new Paragraph({ text: "Step Name", bold: true }),
+                      ],
                     }),
                     new TableCell({
                       children: [new Paragraph({ text: "Shape", bold: true })],
                     }),
                     new TableCell({
-                      children: [new Paragraph({ text: "Duration/Distance", bold: true })],
+                      children: [
+                        new Paragraph({
+                          text: "Duration/Distance",
+                          bold: true,
+                        }),
+                      ],
                     }),
                     new TableCell({
-                      children: [new Paragraph({ text: "Value Type", bold: true })],
+                      children: [
+                        new Paragraph({ text: "Value Type", bold: true }),
+                      ],
                     }),
                   ],
                 }),
-  
+
                 // Data Rows
                 ...summary.steps.map(
                   (step) =>
@@ -229,7 +248,9 @@ const handleDownloadPDF = () => {
                         new TableCell({
                           children: [
                             new Paragraph(
-                              `${shapeNameMap[step.shape] || "Unknown"} (${step.shape})`
+                              `${shapeNameMap[step.shape] || "Unknown"} (${
+                                step.shape
+                              })`
                             ),
                           ],
                         }),
@@ -254,7 +275,7 @@ const handleDownloadPDF = () => {
         },
       ],
     });
-  
+
     Packer.toBlob(doc).then((blob) => {
       saveAs(blob, "summary.docx");
       setIsModalOpen(false);

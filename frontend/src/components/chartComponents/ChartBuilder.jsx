@@ -11,7 +11,7 @@ const ChartBuilder = ({ onSetSummary, onSetTab }) => {
   const handleAddProcess = () => {
     setProcesses((prev) => [
       ...prev,
-      { 
+      {
         processName: "",
         shape: "",
         time: "",
@@ -34,7 +34,7 @@ const ChartBuilder = ({ onSetSummary, onSetTab }) => {
 
   const handleSaveChart = async () => {
     if (!chartName || chartName.trim() === "") {
-      toast.error("Chart name is required.");
+      toast.error("Process name is required.");
       return;
     }
 
