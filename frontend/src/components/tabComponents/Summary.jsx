@@ -5,13 +5,10 @@ import {
   Packer,
   Paragraph,
   TextRun,
-  AlignmentType,
-  HeadingLevel,
   Table,
   TableRow,
   TableCell,
   WidthType,
-  Border,
 } from "docx";
 import { saveAs } from "file-saver";
 import {
@@ -25,7 +22,6 @@ import {
 const Summary = ({ summary }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  //PDF OLUŞTURMA
   const handleDownloadPDF = () => {
     if (!summary) {
       alert("Summary is missing!");
@@ -33,6 +29,7 @@ const Summary = ({ summary }) => {
     }
 
     const doc = new jsPDF();
+    const pageHeight = doc.internal.pageSize.height;
 
     doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
@@ -99,9 +96,16 @@ const Summary = ({ summary }) => {
         shape ? ` (${shape})` : ""
       }`;
       const durationOrDistance =
-        distance != null ? `${distance} m` : `${time} sec`;
+        distance != null ? `${distance} m` : `${time} min`;
 
-      const wrappedName = doc.splitTextToSize(step.stepName, 45);
+      const wrappedName = doc.splitTextToSize(stepName, 45);
+
+      // Sayfa bitimini kontrol et
+      if (rowY + wrappedName.length * 7 > pageHeight - 20) {
+        doc.addPage();
+        rowY = 20;
+      }
+
       doc.text(wrappedName, 10, rowY);
 
       const iconY = rowY - 4;
@@ -130,7 +134,6 @@ const Summary = ({ summary }) => {
     setIsModalOpen(false);
   };
 
-  // DOCX OLUŞTURMA
   const handleDownloadDOCX = () => {
     if (!summary) {
       alert("Summary is missing!");
@@ -150,20 +153,13 @@ const Summary = ({ summary }) => {
       sections: [
         {
           children: [
-            // Title
             new Paragraph({
               children: [
-                new TextRun({
-                  text: "Summary Report",
-                  bold: true,
-                  size: 32,
-                }),
+                new TextRun({ text: "Summary Report", bold: true, size: 32 }),
               ],
               alignment: "center",
               spacing: { after: 300 },
             }),
-
-            // Process Name
             new Paragraph({
               children: [
                 new TextRun({
@@ -173,8 +169,6 @@ const Summary = ({ summary }) => {
               ],
               spacing: { after: 200 },
             }),
-
-            // General Information
             new Paragraph({
               text: "General Information:",
               bold: true,
@@ -188,29 +182,21 @@ const Summary = ({ summary }) => {
             new Paragraph(
               `Non-Value Added: ${summary.nonValueAddedCount} (${summary.nonValueAddedPercentage}%)`
             ),
-
-            // Shapes Summary (General Info içindeymiş gibi)
             ...summary.shapes.map(
               (shape) =>
                 new Paragraph(
                   `${shape.name} (${shape.shape}): ${shape.count} step(s) - ${shape.percentage}%`
                 )
             ),
-
             new Paragraph({ text: "", spacing: { before: 300, after: 100 } }),
-
-            // Steps of the Process
             new Paragraph({
               text: "Steps of the Process:",
               bold: true,
               spacing: { after: 200 },
             }),
-
-            // Table
             new Table({
               width: { size: 100, type: WidthType.PERCENTAGE },
               rows: [
-                // Header Row
                 new TableRow({
                   children: [
                     new TableCell({
@@ -236,8 +222,6 @@ const Summary = ({ summary }) => {
                     }),
                   ],
                 }),
-
-                // Data Rows
                 ...summary.steps.map(
                   (step) =>
                     new TableRow({
@@ -259,7 +243,7 @@ const Summary = ({ summary }) => {
                             new Paragraph(
                               step.distance != null
                                 ? `${step.distance} m`
-                                : `${step.time} sec`
+                                : `${step.time} min`
                             ),
                           ],
                         }),
@@ -284,7 +268,6 @@ const Summary = ({ summary }) => {
 
   return (
     <div className="space-y-6 w-full max-w-xl relative">
-      {/* Summary Info */}
       <div className="grid grid-cols-2 gap-4 text-sm bg-gray-50 p-4 rounded border">
         <div>
           <strong>Total Time:</strong> {summary.totalTime} min
@@ -302,7 +285,6 @@ const Summary = ({ summary }) => {
         </div>
       </div>
 
-      {/* Shapes Summary */}
       <div>
         <h3 className="text-md font-semibold mb-2">Shapes Summary</h3>
         <div className="space-y-2">
@@ -322,7 +304,6 @@ const Summary = ({ summary }) => {
         </div>
       </div>
 
-      {/* Download Button with Popup Below */}
       <div className="relative inline-block">
         <button
           onClick={() => setIsModalOpen(!isModalOpen)}
